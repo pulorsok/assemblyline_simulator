@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Production Line Simulation</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+<div id="controlPanel">
+	<button id="startLine">Start</button>
+	<button id="resetLine">Reset</button>
+	<label for="autoAddInput" style="cursor:pointer"><input id="autoAddInput" type="checkbox">Auto-add input</label>
+	<label for="autoRemoveOutput" style="cursor:pointer"><input id="autoRemoveOutput" type="checkbox">Auto-remove output</label>
+</div>
+
+<canvas id="simulation" width="1440" height="640">Canvas is not supported</canvas>
+
+<audio id="alarm-audio" preload="none">
+	<source src="assets/alarm.wav" type="audio/wav">
+	Audio is not supported
+</audio>
+
+<script src="bundle.js"></script>
+
+</body>
+</html>
