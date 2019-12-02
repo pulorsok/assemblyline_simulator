@@ -1,47 +1,37 @@
+/**
+	
+**/
+
 const MAX_BUFFER_CAPACITY = 100
 const TWO_PI = 2 * Math.PI
 
-export class Rack {
+export class Buffer {
 
 	constructor(options) {
 		this.name = options.name
 		this.capacity = options.capacity
-		this.feedLine = options.feedLine
-		// this.feedingTime = options.feedingTime
 		this.x = options.x
 		this.y = options.y
 		this.radius = this._getRadius(this.capacity)
-		this.items = 0
+		this.items = []
 		this.inStn = []	
 		this.outStn = []
-		this.feed = false
 	}
 
-	
-	// feeding(num = NaN){
-	// 	console.log('feeding')
-	// 	if (num === NaN){
-	// 		this.items = this.capacity
-	// 		return true
-	// 	}
-	// 	if (this.items.length < this.capacity - num){
-	// 		this.items += num
-	// 		return true
-	// 	}else{
-	// 		return false
-	// 	}
-	// }
-
-	feeding(){
-		if (this.items < this.feedLine){
-			this.items = this.capacity
+	addItem(item) {
+		//returns true if the item was inserted into the buffer
+		if (this.items.length < this.capacity) {
+			this.items.push(item)
+			return true
+		}else {	
+			return false
 		}
 	}
 	
-	removeItem(num) {
+	removeItem() {
 		// removes an item from the buffer according to the FIFO principle
 		// if there are no items to be removed the returned value is undefined
-		this.items -= num
+		return this.items.shift()
 	}
 
 	isFull() {
@@ -54,7 +44,9 @@ export class Rack {
 
 	reset() {
 		// removes all buffered items
-		this.items = 0
+		while (this.items.length > 0) {
+			this.items.shift()
+		}
 	}
 
 	draw(ctx) {
@@ -70,7 +62,7 @@ export class Rack {
 		const y0 = 40
 		*/
 		
-		const n = this.items
+		const n = this.items.length
 		const r = this._getRadius(n)
 
 		// draw circle indicating a full buffer
@@ -82,12 +74,9 @@ export class Rack {
 		ctx.fill()
 		ctx.stroke()
 
-		if (feed){
-			
-		}
 		// circle indicating the actual number of items in the buffer
 		ctx.beginPath()
-		ctx.fillStyle = 'rgb(128,23,0)'
+		ctx.fillStyle = 'rgb(0,91,127)'
 		if (!this.isFull()) {
 			ctx.strokeStyle = '#fff'
 		}else {
@@ -113,6 +102,6 @@ export class Rack {
 	}
 
 	_getArea(n) {
-		return  800 * n / MAX_BUFFER_CAPACITY
+		return 200 + 800 * n / MAX_BUFFER_CAPACITY
 	}	
 }

@@ -1,50 +1,8 @@
 /** 
-	A station is any process or set of activities or tasks required to fulfill 
-	the goals of a production line.
 	
-	The duration of these tasks is specified by the throughput time (tpTime)
-	for the station.
-	
-	A station receives its input from an input buffer and places its output 
-	into an output buffer.
-	
-	A station may have one of the following states:
-		WAITING - a station waits to start processing
-		BUSY    - a station is busy with processing
-		REPAIR  - a station has a failure and undergoes maintenance during a specific time period.
-	
-	Station Properties:
-		name      - name of the station
-		pLine 		- reference to the production line
-		inBuf 		- reference to an input buffer
-		outBuf 		- reference to an output buffer
-		tpTime  	- nominal station throughput time
-		pFail 		- uniform probability of failure
-		tRepair   - nominal station repair time
-		x, y   		- center X- and Y-coordinates for the rectangular box
-		nFail     - total number of station failures
-		state     - current stattion state, IDLE|BUSY|REPAIR
-		tStart 		- last time when the station was started
-		tStop 		- last time when the station was stopped
-		tProd			- total productive time
-		tWait			- total waiting (non-productive) time
-		item 			- reference to the held item
-		
-	Station Methods:
-		linkTo
-		reset
-		update
-		draw
-
-	Features:
-		-station states are indicated by colored circles (blue; waiting, green: busy, red: repair)
-		
-	Version : 0.1
-	Date    : 03/2017
-	Author  : Jari Repo, jarirepo76@gmail.com		
 **/
 
-import { Color } from './color'
+import { Color } from '../support/color'
 
 const COLOR_WAITING = new Color(0, 0, 200)
 const COLOR_BUSY = new Color(0, 200, 0)

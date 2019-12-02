@@ -21,13 +21,13 @@ if (!String.prototype.padStart) {
 // import * as p5 from 'p5'
 import * as $ from 'jquery'
 
-import { Buffer } from './buffer'
-import { Line } from './line'
-import { Station } from './station'
-import { Item } from './item'
-import { Color } from './color'
-import { Rack } from './rack.js'
-import { loadImage, loadAudio } from './loaders'
+import { Buffer } from './model/buffer'
+import { Line } from './model/line'
+import { Station } from './model/station'
+import { Item } from './support/item'
+import { Color } from './support/color'
+import { Rack } from './model/rack.js'
+import { loadImage, loadAudio } from './support/loaders'
 
 const canvas = document.getElementById('simulation')
 const ctx = canvas.getContext('2d')
