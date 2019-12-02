@@ -27,6 +27,7 @@ import { Station } from './model/station'
 import { Item } from './support/item'
 import { Color } from './support/color'
 import { Rack } from './model/rack.js'
+import { Feeder } from './model/feeder'
 import { loadImage, loadAudio } from './support/loaders'
 
 const canvas = document.getElementById('simulation')
@@ -82,7 +83,7 @@ class Simulation {
 
 		// create FIFO-buffers (to be used in between stations)
 		// maximum buffer capacity is 100 units
-		let L1 = new Buffer({name: 'L1', capacity: 1, x: 100, y: canvas.height / 2 })
+		let L1 = new Feeder({name: 'Feeder', capacity: 1, x: 100, y: canvas.height / 2 })
 		let L2 = new Buffer({name: 'L2', capacity: 1, x: 300, y: canvas.height / 2 })
 		let L3 = new Buffer({name: 'L3', capacity: 1, x: 500, y: canvas.height / 2 })
 		let L4 = new Buffer({name: 'L4', capacity: 1, x: 700, y: canvas.height / 2 })
@@ -105,7 +106,6 @@ class Simulation {
 				outBuf: out_buf,
 				inputPeriod: 1
 		})
-
 		// create the stations (connect them from left to right)
 		const S1 = new Station(this.testLine, {
 			name: 'Station 1',
@@ -223,19 +223,19 @@ class Simulation {
 		this.testLine.update()
 	}
 
-	handleMouseInput(mou) {
-		if (this.testLine.inBuf.isPointInside(mou)) {
-			// add items to the production line input buffer
-			for (let i = 0; i < this.options.inputBatchSize; i++) {
-				this.testLine.inBuf.addItem(new Item())
-			}
-		}else if (this.testLine.outBuf.isPointInside(mou)) {
-			// remove items from the production line output buffer		
-			for (let i = 0; i < this.options.outputBatchSize; i++) {
-				this.testLine.outBuf.removeItem()
-			}			
-		}	
-	}
+	// handleMouseInput(mou) {
+	// 	if (this.testLine.inBuf.isPointInside(mou)) {
+	// 		// add items to the production line input buffer
+	// 		for (let i = 0; i < this.options.inputBatchSize; i++) {
+	// 			this.testLine.inBuf.addItem(new Item())
+	// 		}
+	// 	}else if (this.testLine.outBuf.isPointInside(mou)) {
+	// 		// remove items from the production line output buffer		
+	// 		for (let i = 0; i < this.options.outputBatchSize; i++) {
+	// 			this.testLine.outBuf.removeItem()
+	// 		}			
+	// 	}	
+	// }
 
 	render(ctx) {
 		this.testLine.draw(ctx)
@@ -355,15 +355,15 @@ $('#autoRemoveOutput')
 })
 
 // canvas event listeners
-canvas.addEventListener('mousemove', e => {
-	const rect = canvas.getBoundingClientRect()
-	mouse.x = e.clientX - rect.left
-	mouse.y = e.clientY - rect.top
-})
+// canvas.addEventListener('mousemove', e => {
+// 	const rect = canvas.getBoundingClientRect()
+// 	mouse.x = e.clientX - rect.left
+// 	mouse.y = e.clientY - rect.top
+// })
 
-canvas.addEventListener('click', e => {
-	sim.handleMouseInput(mouse)
-})
+// canvas.addEventListener('click', e => {
+// 	sim.handleMouseInput(mouse)
+// })
 
 function animate(time = 0) {
 	ctx.fillStyle = '#202020'
@@ -378,11 +378,11 @@ function animate(time = 0) {
 	*/
 
 	// change mouse pointer
-	if (sim.testLine.inBuf.isPointInside(mouse) || sim.testLine.outBuf.isPointInside(mouse)) {
-		canvas.style.cursor = 'pointer'
-	}else {
-		canvas.style.cursor = 'default'
-	}
+	// if (sim.testLine.inBuf.isPointInside(mouse) || sim.testLine.outBuf.isPointInside(mouse)) {
+	// 	canvas.style.cursor = 'pointer'
+	// }else {
+	// 	canvas.style.cursor = 'default'
+	// }
 
 	sim.update()
 	sim.render(ctx)
