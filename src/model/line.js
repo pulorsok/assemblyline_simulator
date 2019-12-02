@@ -34,7 +34,7 @@ export class Line {
 	constructor(options) {	
 		this.name = options.name
 		this.stations = [];
-		this.inBuf = options.inBuf
+		this.feeder = options.feeder
 		this.outBuf = options.outBuf
 		this.inputPeriod = options.inputPeriod
 		this.timeStep = 0
@@ -66,7 +66,7 @@ export class Line {
 		this.timeStep = 0
 		this.producedItems = 0
 		this.productivity = 0
-		this.inBuf.reset()
+		this.feeder.reset()
 		this.outBuf.reset()
 	}
 	
@@ -77,7 +77,7 @@ export class Line {
 		this.timeStep++
 		
 		if (0 && this.timeStep % this.inputPeriod == 0) {			
-			this.inBuf.addItem(new Item())
+			this.feeder.addWPC(new Item())
 		}
 
 		// set station updated flag to false
@@ -123,7 +123,7 @@ export class Line {
 			if (s.state === StationState.REPAIR) {
 				this.faulty = true
 			}
-			this.jammed = this.jammed && (s.inBuf.isFull() && s.outBuf.isFull())
+			this.jammed = this.jammed && (s.feeder.isFull() && s.outBuf.isFull())
 			for (let i = 0; i < s.prevStations.length; i++) {
 				let obj = s.prevStations[i]
 				this.updater(obj)
@@ -144,7 +144,7 @@ export class Line {
 
 	draw(ctx) {
 		// draws the complete production line
-		let xmin = this.inBuf.x,
+		let xmin = this.feeder.x,
 				xmax = this.outBuf.x
 
 		ctx.fillStyle = '#000'
@@ -179,7 +179,7 @@ export class Line {
 		}
 
 		// draw the input and output buffers
-		this.inBuf.draw(ctx)
+		this.feeder.draw(ctx)
 		this.outBuf.draw(ctx)
 
 		// draw the connections and stations
@@ -200,7 +200,7 @@ export class Line {
 		ctx.textBaseline = 'bottom'
 
 		ctx.fillText(`Time step: ${zeroPad(this.timeStep, 5)}`, 5, 24)
-		ctx.fillText(`Input: ${zeroPad(this.inBuf.items.length, 3)}`, 130, 24)
+		ctx.fillText(`Input: ${zeroPad(this.feeder.WPCs.length, 3)}`, 130, 24)
 		ctx.fillText(`Output: ${zeroPad(this.outBuf.items.length, 3)}`, 215, 24)
 		ctx.fillText(`Productivity: ${this.productivity | 0} units/min`, 310, 24)
 	}

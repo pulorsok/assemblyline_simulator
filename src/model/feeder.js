@@ -3,47 +3,45 @@
 
 
 export class Feeder{
+    
     constructor(options){
         this.name = options.name
-
-        this.capacity = options.capacity
-        this.inStn = []	
+		this.MAX_WPC = options.MAX_WPC
+		this.x = options.x
+		this.y = options.y
+		this.WPCs = []
+		this.inStn = []	
 		this.outStn = []
 
-        this.x = options.x
-        this.y = options.y
-        
-        this.MAX_WPC = 5
-
     }
-    addItem(item) {
+    addWPC(WPC) {
 		//returns true if the item was inserted into the buffer
-		if (this.items.length < this.capacity) {
-			this.items.push(item)
+		if (this.WPCs.length < this.capacity) {
+			this.WPCs.push(item)
 			return true
 		}else {	
 			return false
 		}
 	}
 	
-	removeItem() {
+	removeWPC() {
 		// removes an item from the buffer according to the FIFO principle
-		// if there are no items to be removed the returned value is undefined
-		return this.items.shift()
+		// if there are no WPCs to be removed the returned value is undefined
+		return this.WPCs.shift()
 	}
 
 	isFull() {
-		return this.items.length === this.capacity
+		return this.WPCs.length === this.MAX_WPC
 	}
 
 	isEmpty() {
-		return this.items.length === 0
+		return this.WPCs.length === 0
 	}
 
 	reset() {
-		// removes all buffered items
-		while (this.items.length > 0) {
-			this.items.shift()
+		// removes all buffered WPCs
+		while (this.WPCs.length > 0) {
+			this.WPCs.shift()
 		}
 	}
 

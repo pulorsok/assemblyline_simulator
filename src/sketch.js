@@ -83,7 +83,7 @@ class Simulation {
 
 		// create FIFO-buffers (to be used in between stations)
 		// maximum buffer capacity is 100 units
-		let L1 = new Feeder({name: 'Feeder', capacity: 1, x: 100, y: canvas.height / 2 })
+		let L1 = new Feeder({name: 'Feeder', MAX_WPC: 3, x: 100, y: canvas.height / 2 })
 		let L2 = new Buffer({name: 'L2', capacity: 1, x: 300, y: canvas.height / 2 })
 		let L3 = new Buffer({name: 'L3', capacity: 1, x: 500, y: canvas.height / 2 })
 		let L4 = new Buffer({name: 'L4', capacity: 1, x: 700, y: canvas.height / 2 })
@@ -102,7 +102,7 @@ class Simulation {
 		
 		this.testLine = new Line({
 				name: 'Assembly Line',
-				inBuf: L1,
+				feeder: L1,
 				outBuf: out_buf,
 				inputPeriod: 1
 		})
@@ -110,7 +110,7 @@ class Simulation {
 		const S1 = new Station(this.testLine, {
 			name: 'Station 1',
 			rack: this.R1,
-			inBuf: this.testLine.inBuf,
+			inBuf: this.testLine.feeder,
 			outBuf: L2,
 			tpTime: 75,
 			pFail: 0.005,
@@ -203,7 +203,7 @@ class Simulation {
 		// precompiled messages
 		this.messages = {
 			jammed: `Production line is jammed. Click on buffer ${this.testLine.outBuf.name} to remove items`,
-			empty: `Input buffer ${this.testLine.inBuf.name} is empty. Click on it to add ${this.options.inputBatchSize} items`,
+			empty: `Input buffer ${this.testLine.feeder.name} is empty. Click on it to add ${this.options.inputBatchSize} items`,
 			full: `Output buffer ${this.testLine.outBuf.name} is full. Click on it to remove ${this.options.outputBatchSize} items`
 		}		
 	}
@@ -281,7 +281,7 @@ class Simulation {
 			ctx.fillText(this.messages.jammed, ctx.canvas.width / 2, y)				
 		}else {
 			let y = ctx.canvas.height - 24
-			if (this.testLine.inBuf.isEmpty()) {
+			if (this.testLine.feeder.isEmpty()) {
 				ctx.fillText(this.messages.empty, ctx.canvas.width / 2, y)				
 				y += 14
 			}
