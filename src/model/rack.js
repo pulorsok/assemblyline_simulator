@@ -2,7 +2,8 @@
 
 **/
 
-
+const MAX_BUFFER_CAPACITY = 100
+const TWO_PI = 2 * Math.PI
 
 
 
@@ -10,72 +11,100 @@ export class Rack {
 
 	constructor(options) {
 		this.name = options.name
-		this.rack_row = options.rack_row
-		this.rack_col = options.rack_col
+		this.capacity = options.capacity
 		this.x = options.x
 		this.y = options.y
-		this.MAX_BOX_BUMBER = 0
-		this.box_arrangement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     = options.box_arrangement
-		this.station = options.station
+		// this.radius = this._getRadius(this.capacity)
+		this.items = []
+		this.inStn = []	
+		this.outStn = []
 
 		
+		
+		this.rack_row = 4
+		this.rack_col = 4
+		this.x = options.x
+		this.y = options.y
+		this.MAX_BOX = 16
+		this.box_arrangement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     = options.box_arrangement
+
+
+		
+	}
+	addItem(item) {
+		//returns true if the item was inserted into the buffer
+		if (this.items.length < this.capacity) {
+			this.items.push(item)
+			return true
+		}else {	
+			return false
+		}
+	}
+	
+	removeItem() {
+		// removes an item from the buffer according to the FIFO principle
+		// if there are no items to be removed the returned value is undefined
+		return this.items.shift()
+	}
+
+	isFull() {
+		return this.items.length === this.capacity
+	}
+
+	isEmpty() {
+		return this.items.length === 0
+	}
+
+	reset() {
+		// removes all buffered items
+		while (this.items.length > 0) {
+			this.items.shift()
+		}
 	}
 
 
 
 	draw(ctx) {
+		ctx.font = 'normal 12pt Calibri'
 
-		ctx.font = '12pt Cambria'
+		const w = ctx.measureText(this.name).width * 1.5
+		const h = 25 * 1.5
+
+		for (let i = 0; i < this.rack_row; i++) {
+			for (let y = 0; y < this.rack_col; y++) {
+				ctx.beginPath()
+				ctx.strokeStyle = '#fff'
+				ctx.lineWidth = 1
+				ctx.rect(this.x - w*this.rack_col/2 + w*y, this.y - h*this.rack_row/2 + h*i, w, h)
+				ctx.stroke()
+					
+			}
+		}
+
+		// ctx.beginPath()
+		// ctx.strokeStyle = '#fff'
+		// ctx.lineWidth = 1
+		// ctx.rect(this.x - w / 2, this.y - h / 2, w, h)
+		// ctx.stroke()
+
+		// ctx.beginPath()
+		// let tWidth = this._getRectWidth(this.t-this.tStart)*w
+		// if (tWidth > w){ tWidth = w }
+		// ctx.fillStyle = 'rgb(102,102,102)'
+		// ctx.rect(this.x - w / 2, this.y - h / 2, tWidth, h)
+		// ctx.fill()
+
+		// station label
 		ctx.textAlign = 'center'
 		ctx.textBaseline = 'middle'
-
-		/*
-		const w = ctx.measureText(this.name).width
-		const h = 30
-		const x0 = ctx.canvas.width / 2
-		const y0 = 40
-		*/
-		
-		const n = this.items.length
-		const r = this._getRadius(n)
-
-		// draw circle indicating a full buffer
-		ctx.beginPath()
-		ctx.lineWidth = 1
-		ctx.fillStyle = 'rgba(0,0,0,0.5)'
-		ctx.strokeStyle = 'rgb(102,102,102)'
-		ctx.ellipse(this.x, this.y, 2 * this.radius, 2 * this.radius, 0, 0, TWO_PI)
-		ctx.fill()
-		ctx.stroke()
-
-		// circle indicating the actual number of items in the buffer
-		ctx.beginPath()
-		ctx.fillStyle = 'rgb(0,91,127)'
-		if (!this.isFull()) {
-			ctx.strokeStyle = '#fff'
-		}else {
-			ctx.strokeStyle = '#ff0000'
-		}
-		ctx.ellipse(this.x, this.y, 2 * r, 2 * r, 0, 0, TWO_PI)
-		ctx.fill()
-		ctx.stroke()
-
-		// buffer label
 		ctx.fillStyle = '#fff'
 		ctx.fillText(this.name, this.x, this.y)
+
+		// state indicator (filled circle depending on the state)
+		
 	}
 
-	isPointInside(p) {
-		const dx = this.x - p.x
-		const dy = this.y - p.y
-		return Math.sqrt(dx * dx + dy * dy) < this.radius
+	_getRectWidth(n){
+		return n / this.tpTime
 	}
-
-	_getRadius(n) {
-		return Math.sqrt(this._getArea(n) / Math.PI)		
-	}
-
-	_getArea(n) {
-		return 200 + 800 * n / MAX_BUFFER_CAPACITY
-	}	
 }
