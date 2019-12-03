@@ -10,57 +10,38 @@ const TWO_PI = 2 * Math.PI
 export class Rack {
 
 	constructor(options) {
-		this.name = options.name
-		this.capacity = options.capacity
+		this.name = options.name		
+		this.rack_row = options.rack_row
+		this.rack_col = options.rack_col
 		this.x = options.x
 		this.y = options.y
-		// this.radius = this._getRadius(this.capacity)
-		this.items = []
-		this.inStn = []	
-		this.outStn = []
-
-		
-		
-		this.rack_row = 4
-		this.rack_col = 4
-		this.x = options.x
-		this.y = options.y
-		this.MAX_BOX = 16
-		this.box_arrangement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     = options.box_arrangement
-
-
-		
+		this.MAX_BOX = 0
+		// this.box_arrangement = options.box_arrangement
+		// this.station = options.station
+		this.available_box = []
+		this.candidate_box = []     
 	}
-	addItem(item) {
-		//returns true if the item was inserted into the buffer
-		if (this.items.length < this.capacity) {
-			this.items.push(item)
-			return true
-		}else {	
-			return false
-		}
+	consume_material(menu){
+	
+	}
+	priority_assign(){
+
+	}
+	replace(){
+
+	}
+	remove(box){
+
+	}
+	add_box(box){
+
+	}
+	is_sufficient(){
+	
 	}
 	
-	removeItem() {
-		// removes an item from the buffer according to the FIFO principle
-		// if there are no items to be removed the returned value is undefined
-		return this.items.shift()
-	}
-
-	isFull() {
-		return this.items.length === this.capacity
-	}
-
-	isEmpty() {
-		return this.items.length === 0
-	}
-
-	reset() {
-		// removes all buffered items
-		while (this.items.length > 0) {
-			this.items.shift()
-		}
-	}
+	
+	
 
 
 

@@ -17,6 +17,14 @@ export const StationState = {
 export class Station {
 
 	constructor(line, options) {
+		// this.name = options.name
+		// this.wpc_id = 0
+		// this.rack = options.rack
+		// this.inBuf = options.inBuf
+		// this.outBuf = options.outBuf
+		// this.status = StationStatus.IDLE
+		// this.procedure = NaN
+		
 		this.pLine = line
 		this.name = options.name
 		this.rack = options.rack
@@ -47,7 +55,21 @@ export class Station {
 			this.outBuf.inStn.push(this)
 		}	
 	}
+	get_procedure(){
 		
+	}
+	is_WPC(){
+		
+	}
+	is_rack(){
+		
+	}
+	set_rack(rack){
+
+	}
+	set_procedure(procedure){
+
+	}
 	reset() {
 		console.log(`Reset station ${this.name}`)
 
@@ -113,7 +135,7 @@ export class Station {
 							// this.tStart = t;
 							// get an item from the input buffer (if anything there)
 							let item = this.inBuf.removeItem()
-							let components = this.rack.removeItem(10)
+							// let components = this.rack.removeItem(10)
 							if (item !== undefined) {
 								this.state = StationState.BUSY
 								this.tStart = t

@@ -5,48 +5,33 @@
 const MAX_BUFFER_CAPACITY = 100
 const TWO_PI = 2 * Math.PI
 
-export class Buffer {
+export class Box {
 
 	constructor(options) {
+		this.id = options.id
 		this.name = options.name
 		this.capacity = options.capacity
-		this.x = options.x
-		this.y = options.y
-		this.radius = this._getRadius(this.capacity)
-		this.items = []
-		this.inStn = []	
-		this.outStn = []
+		this.material = options.material
+		this.replenishment_delay = options.replenishment_delay
+
 	}
 
-	addItem(item) {
-		//returns true if the item was inserted into the buffer
-		if (this.items.length < this.capacity) {
-			this.items.push(item)
-			return true
-		}else {	
-			return false
-		}
+	is_empty(){
+		return
 	}
-	
-	removeItem() {
-		// removes an item from the buffer according to the FIFO principle
-		// if there are no items to be removed the returned value is undefined
-		return this.items.shift()
+	is_full(){
+		return
+	}
+	consume(n){
+		return
+	}
+	replenish(){
+		
 	}
 
-	isFull() {
-		return this.items.length === this.capacity
-	}
-
-	isEmpty() {
-		return this.items.length === 0
-	}
 
 	reset() {
-		// removes all buffered items
-		while (this.items.length > 0) {
-			this.items.shift()
-		}
+		
 	}
 
 	draw(ctx) {

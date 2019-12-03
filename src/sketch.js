@@ -78,134 +78,158 @@ class Simulation {
 		this.options = options
 		this.started = false
 		
+		let L1 = new Buffer({name: 'L1', capacity: 1, x: 250, y: canvas.height/2 })
 
-
-
-		// create FIFO-buffers (to be used in between stations)
-		// maximum buffer capacity is 100 units
-		let L1 = new Feeder({name: 'Feeder', MAX_WPC: 3, x: 100, y: canvas.height / 2 })
-		let L2 = new Buffer({name: 'L2', capacity: 1, x: 300, y: canvas.height / 2 })
-		let L3 = new Buffer({name: 'L3', capacity: 1, x: 500, y: canvas.height / 2 })
-		let L4 = new Buffer({name: 'L4', capacity: 1, x: 700, y: canvas.height / 2 })
-		let out_buf = new Buffer({name: 'out bufer', capacity: 100, x: 900, y: canvas.height / 2 })
+		let feeder = new Feeder({name: 'Feeder', outBuf: L1, MAX_WPC: 5, x: 100, y: canvas.height/2})
+		let out_buf = new Buffer({name: 'out bufer', capacity: 100, x: 900, y: canvas.height/2 })
 		
-		
-		
-
-		this.R1 = new Rack({name: 'R1',feedLine: 10, capacity: 100, x: 200, y: canvas.height / 2 - 100})
-		this.R2 = new Rack({name: 'R2',feedLine: 10,  capacity: 100, x: 400, y: canvas.height / 2 - 100})
-		this.R3 = new Rack({name: 'R3',feedLine: 10,  capacity: 100, x: 600, y: canvas.height / 2 - 100})
-		this.R4 = new Rack({name: 'R4',feedLine: 10,  capacity: 100, x: 800, y: canvas.height / 2 - 100})
-		
-
-		// create a test production line
-		
+		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, x: 500, y: canvas.height/2-100})
 		this.testLine = new Line({
 				name: 'Assembly Line',
-				feeder: L1,
+				feeder: feeder,
 				outBuf: out_buf,
 				inputPeriod: 1
 		})
-		// create the stations (connect them from left to right)
 		const S1 = new Station(this.testLine, {
 			name: 'Station 1',
 			rack: this.R1,
-			inBuf: this.testLine.feeder,
-			outBuf: L2,
+			inBuf: L1,
+			outBuf: out_buf,
 			tpTime: 75,
 			pFail: 0.005,
 			tRepair: 20,
 			cNum: 3,
-			x: 200,
+			x: 500,
 			y: canvas.height / 2
 		})
+		this.testLine.stations = [S1]
+		this.stations = [S1]
 
-		const S2 = new Station(this.testLine, {
-			name: 'Station 2',
-			rack: this.R2,
-			inBuf: L2,
-			outBuf: L3,
-			tpTime: 100,
-			pFail: 0.01,
-			tRepair: 50,
-			cNum: 6,
-			x: 400,
-			y: canvas.height / 2
-		})
-
-		const S3 = new Station(this.testLine, {
-			name: 'Station 3',
-			rack: this.R3,
-			inBuf: L3,
-			outBuf: L4,
-			tpTime: 120,
-			pFail: 0.01,
-			tRepair: 100,
-			cNum: 9,
-			x: 600,
-			y: canvas.height / 2 
-		})
-
-		const S4 = new Station(this.testLine, {
-			name: 'Station 4',
-			rack: this.R4,
-			inBuf: L4,
-			outBuf: this.testLine.outBuf,
-			tpTime: 110,
-			pFail: 0.01,
-			tRepair: 50,
-			cNum: 4,
-			x: 800,
-			y: canvas.height / 2
-		})
-
+		// // create FIFO-buffers (to be used in between stations)
+		// // maximum buffer capacity is 100 units
+		// let L1 = new Feeder({name: 'Feeder', MAX_WPC: 3, x: 100, y: canvas.height / 2 })
+		// let L2 = new Buffer({name: 'L2', capacity: 1, x: 300, y: canvas.height / 2 })
+		// let L3 = new Buffer({name: 'L3', capacity: 1, x: 500, y: canvas.height / 2 })
+		// let L4 = new Buffer({name: 'L4', capacity: 1, x: 700, y: canvas.height / 2 })
+		// let out_buf = new Buffer({name: 'out bufer', capacity: 100, x: 900, y: canvas.height / 2 })
 		
-		// const Warehouse = new Sta
-		// let S5 = new Station({p5: p,
-		// 	name: 'Station 5',
-		// 	pLine: testLine,
-		// 	inBuf: B4,
-		// 	outBuf: testLine.outBuf,
-		// 	tpTime: 2,
+		
+		
+
+		// this.R1 = new Rack({name: 'R1',feedLine: 10, capacity: 100, x: 200, y: canvas.height / 2 - 100})
+		// this.R2 = new Rack({name: 'R2',feedLine: 10,  capacity: 100, x: 400, y: canvas.height / 2 - 100})
+		// this.R3 = new Rack({name: 'R3',feedLine: 10,  capacity: 100, x: 600, y: canvas.height / 2 - 100})
+		// this.R4 = new Rack({name: 'R4',feedLine: 10,  capacity: 100, x: 800, y: canvas.height / 2 - 100})
+		
+
+		// // create a test production line
+		
+		// this.testLine = new Line({
+		// 		name: 'Assembly Line',
+		// 		feeder: L1,
+		// 		outBuf: out_buf,
+		// 		inputPeriod: 1
+		// })
+		// // create the stations (connect them from left to right)
+		// const S1 = new Station(this.testLine, {
+		// 	name: 'Station 1',
+		// 	rack: this.R1,
+		// 	inBuf: this.testLine.feeder,
+		// 	outBuf: L2,
+		// 	tpTime: 75,
+		// 	pFail: 0.005,
+		// 	tRepair: 20,
+		// 	cNum: 3,
+		// 	x: 200,
+		// 	y: canvas.height / 2
+		// })
+
+		// const S2 = new Station(this.testLine, {
+		// 	name: 'Station 2',
+		// 	rack: this.R2,
+		// 	inBuf: L2,
+		// 	outBuf: L3,
+		// 	tpTime: 100,
+		// 	pFail: 0.01,
+		// 	tRepair: 50,
+		// 	cNum: 6,
+		// 	x: 400,
+		// 	y: canvas.height / 2
+		// })
+
+		// const S3 = new Station(this.testLine, {
+		// 	name: 'Station 3',
+		// 	rack: this.R3,
+		// 	inBuf: L3,
+		// 	outBuf: L4,
+		// 	tpTime: 120,
 		// 	pFail: 0.01,
 		// 	tRepair: 100,
-		// 	x: 475,
-		// 	y: p.height/2-75
-		// });
-		
-		// let S6 = new Station({p5: p,
-		// 	name: 'Station 6',
-		// 	pLine: testLine,
-		// 	inBuf: B4,
-		// 	outBuf: testLine.outBuf,
-		// 	tpTime: 3,
+		// 	cNum: 9,
+		// 	x: 600,
+		// 	y: canvas.height / 2 
+		// })
+
+		// const S4 = new Station(this.testLine, {
+		// 	name: 'Station 4',
+		// 	rack: this.R4,
+		// 	inBuf: L4,
+		// 	outBuf: this.testLine.outBuf,
+		// 	tpTime: 110,
 		// 	pFail: 0.01,
-		// 	tRepair: 200,
-		// 	x: 475,
-		// 	y: p.height/2+75
-		// });
-		
-		this.stations = [S1, S2, S3, S4]
+		// 	tRepair: 50,
+		// 	cNum: 4,
+		// 	x: 800,
+		// 	y: canvas.height / 2
+		// })
 
-		// forward linking of the stations
-		S1.linkTo(S2)
-		S2.linkTo(S3)
-		S3.linkTo(S4)
 		
+		// // const Warehouse = new Sta
+		// // let S5 = new Station({p5: p,
+		// // 	name: 'Station 5',
+		// // 	pLine: testLine,
+		// // 	inBuf: B4,
+		// // 	outBuf: testLine.outBuf,
+		// // 	tpTime: 2,
+		// // 	pFail: 0.01,
+		// // 	tRepair: 100,
+		// // 	x: 475,
+		// // 	y: p.height/2-75
+		// // });
 		
+		// // let S6 = new Station({p5: p,
+		// // 	name: 'Station 6',
+		// // 	pLine: testLine,
+		// // 	inBuf: B4,
+		// // 	outBuf: testLine.outBuf,
+		// // 	tpTime: 3,
+		// // 	pFail: 0.01,
+		// // 	tRepair: 200,
+		// // 	x: 475,
+		// // 	y: p.height/2+75
+		// // });
 		
-		// S4.linkTo(S6);
-		// S3.linkTo(S6);
-		
-		// set starting/input stations
-		this.testLine.stations = [S1]
+		// this.stations = [S1, S2, S3, S4]
 
-		// precompiled messages
-		this.messages = {
-			jammed: `Production line is jammed. Click on buffer ${this.testLine.outBuf.name} to remove items`,
-			empty: `Input buffer ${this.testLine.feeder.name} is empty. Click on it to add ${this.options.inputBatchSize} items`,
-			full: `Output buffer ${this.testLine.outBuf.name} is full. Click on it to remove ${this.options.outputBatchSize} items`
-		}		
+		// // forward linking of the stations
+		// S1.linkTo(S2)
+		// S2.linkTo(S3)
+		// S3.linkTo(S4)
+		
+		
+		
+		// // S4.linkTo(S6);
+		// // S3.linkTo(S6);
+		
+		// // set starting/input stations
+		// this.testLine.stations = [S1]
+
+		// // precompiled messages
+		// this.messages = {
+		// 	jammed: `Production line is jammed. Click on buffer ${this.testLine.outBuf.name} to remove items`,
+		// 	empty: `Input buffer ${this.testLine.feeder.name} is empty. Click on it to add ${this.options.inputBatchSize} items`,
+		// 	full: `Output buffer ${this.testLine.outBuf.name} is full. Click on it to remove ${this.options.outputBatchSize} items`
+		// }		
 	}
 
 	start() {
@@ -259,11 +283,11 @@ class Simulation {
 		if (this.started) {
 			// auto-add input and auto-remove output
 			if (this.options.autoAddInput) {	
-				this.testLine.inBuf.addItem(new Item())
-				this.R1.feeding()
-				this.R2.feeding()
-				this.R3.feeding()
-				this.R4.feeding()
+				this.testLine.feeder.addWPC(new Item())
+				// this.R1.feeding()
+				// this.R2.feeding()
+				// this.R3.feeding()
+				// this.R4.feeding()
 			}
 			if (this.options.autoRemoveOutput && this.testLine.outBuf.isFull()) {
 				this.testLine.outBuf.reset()
@@ -282,11 +306,11 @@ class Simulation {
 		}else {
 			let y = ctx.canvas.height - 24
 			if (this.testLine.feeder.isEmpty()) {
-				ctx.fillText(this.messages.empty, ctx.canvas.width / 2, y)				
+				// ctx.fillText(this.messages.empty, ctx.canvas.width / 2, y)				
 				y += 14
 			}
 			if (this.testLine.outBuf.isFull()) {
-				ctx.fillText(this.messages.full, ctx.canvas.width / 2, y)
+				// ctx.fillText(this.messages.full, ctx.canvas.width / 2, y)
 			}					
 		}
 

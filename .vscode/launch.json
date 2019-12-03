@@ -6,10 +6,13 @@
     "configurations": [
     
         {
-            "type": "node",
+            "type": "chrome",
             "request": "launch",
-            "name": "Launch Webpack",
-            "program": "${workspaceFolder}/dist/bundle.js"
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "trace": true
             
             
         }

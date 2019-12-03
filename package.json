@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "webpack && webpack-dev-server --watch",
+    "dev": "webpack-dev-server --host 0.0.0.0 --config ./webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },

@@ -9,25 +9,25 @@ export class Feeder{
 		this.MAX_WPC = options.MAX_WPC
 		this.x = options.x
 		this.y = options.y
-		this.WPCs = []
-		this.inStn = []	
-		this.outStn = []
+		this.WPCs = []	
+		this.outBuf = options.outBuf
 
     }
     addWPC(WPC) {
 		//returns true if the item was inserted into the buffer
-		if (this.WPCs.length < this.capacity) {
-			this.WPCs.push(item)
+		if (this.WPCs.length < this.MAX_WPC) {
+			this.WPCs.push(WPC)
 			return true
 		}else {	
 			return false
 		}
 	}
 	
-	removeWPC() {
+	pop_wpc() {
 		// removes an item from the buffer according to the FIFO principle
 		// if there are no WPCs to be removed the returned value is undefined
-		return this.WPCs.shift()
+		let wpc = this.WPCs.shift()
+		this.outBuf.addItem(wpc)
 	}
 
 	isFull() {

@@ -8,7 +8,7 @@
 
 	Line Properties:
 		name 				- name for the production line
-		inBuf 		  - reference to input buffer
+		feeder 		  - reference to input buffer
 		outBuf 			- reference to output buffer
 		stations    - references to the first level of stations
 		inputPeriod - input period (in millisecs.)
@@ -78,6 +78,7 @@ export class Line {
 		
 		if (0 && this.timeStep % this.inputPeriod == 0) {			
 			this.feeder.addWPC(new Item())
+			this.feede.pop_wpc()
 		}
 
 		// set station updated flag to false
@@ -117,13 +118,14 @@ export class Line {
 	}
 
 	updater(s) {
-		// recursive update of stations
+		// recursive update of stations and feeder
 		if (s) {
+			
 			s.update(this.timeStep)	
 			if (s.state === StationState.REPAIR) {
 				this.faulty = true
 			}
-			this.jammed = this.jammed && (s.feeder.isFull() && s.outBuf.isFull())
+			this.jammed = this.jammed && (s.inBuf.isFull() && s.outBuf.isFull())
 			for (let i = 0; i < s.prevStations.length; i++) {
 				let obj = s.prevStations[i]
 				this.updater(obj)

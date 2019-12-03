@@ -6,18 +6,19 @@ module.exports = {
   entry: {
     filename: './src/sketch.js'
   },
+  devtool:'source-map',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
-    port: 3000
+    port: 8080
   },
   plugins: [
     new UglifyJsPlugin({
       cache: true,
-      sourceMap: false,
+      sourceMap: true,
       parallel: true,
       extractComments: true,
       uglifyOptions: {
