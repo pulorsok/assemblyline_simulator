@@ -28,6 +28,8 @@ export class Feeder{
 		// if there are no WPCs to be removed the returned value is undefined
 		let wpc = this.WPCs.shift()
 		this.outBuf.addItem(wpc)
+
+		console.log('pop wpc')
 	}
 
 	isFull() {
@@ -49,16 +51,23 @@ export class Feeder{
         ctx.font = 'normal 12pt Calibri'
 
 		const w = ctx.measureText(this.name).width * 1.5
-		const h = 25 * 1.5
+		const h = 25
 
 		for (let i = 0; i < this.MAX_WPC; i++) {
             ctx.beginPath()
             ctx.strokeStyle = '#fff'
             ctx.lineWidth = 1
             ctx.rect(this.x - w/2, this.y - h/2 - h*i, w, h)
-            ctx.stroke()
+			ctx.stroke()
+			
 					
 			
+		}
+		for (let i = 0; i < this.WPCs.length; i++) {
+			ctx.beginPath()
+			ctx.fillStyle = 'rgb(102,102,102)'
+			ctx.rect(this.x - w/2, this.y - h/2 - h*i, w, h)
+			ctx.fill()
 		}
 
 		// ctx.beginPath()

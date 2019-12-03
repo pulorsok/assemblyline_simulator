@@ -90,25 +90,28 @@ export class Buffer {
 		const n = this.items.length
 		const r = this._getRadius(n)
 
+
+	
 		// draw circle indicating a full buffer
-		ctx.beginPath()
-		ctx.lineWidth = 1
-		ctx.fillStyle = 'rgba(0,0,0,0.5)'
-		ctx.strokeStyle = 'rgb(102,102,102)'
-		ctx.ellipse(this.x, this.y, 2 * this.radius, 2 * this.radius, 0, 0, TWO_PI)
-		ctx.fill()
-		ctx.stroke()
+		// ctx.beginPath()
+		// ctx.lineWidth = 1
+		// ctx.fillStyle = 'rgba(0,0,0,0.5)'
+		// ctx.strokeStyle = 'rgb(102,102,102)'
+		// ctx.ellipse(this.x, this.y, 2 * this.radius, 2 * this.radius, 0, 0, TWO_PI)
+		// ctx.fill()
+		// ctx.stroke()
 
 		// circle indicating the actual number of items in the buffer
 		ctx.beginPath()
 		ctx.fillStyle = 'rgb(0,91,127)'
+		ctx.ellipse(this.x, this.y, 25, 25, 0, 0, TWO_PI)
 		if (!this.isFull()) {
 			ctx.strokeStyle = '#fff'
+			ctx.fill()
 		}else {
 			ctx.strokeStyle = '#ff0000'
 		}
-		ctx.ellipse(this.x, this.y, 2 * r, 2 * r, 0, 0, TWO_PI)
-		ctx.fill()
+		
 		ctx.stroke()
 
 		// buffer label

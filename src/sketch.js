@@ -284,6 +284,7 @@ class Simulation {
 			// auto-add input and auto-remove output
 			if (this.options.autoAddInput) {	
 				this.testLine.feeder.addWPC(new Item())
+				this.testLine.feeder.pop_wpc()
 				// this.R1.feeding()
 				// this.R2.feeding()
 				// this.R3.feeding()

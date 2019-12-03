@@ -78,7 +78,7 @@ export class Line {
 		
 		if (0 && this.timeStep % this.inputPeriod == 0) {			
 			this.feeder.addWPC(new Item())
-			this.feede.pop_wpc()
+			this.feeder.pop_wpc()
 		}
 
 		// set station updated flag to false
