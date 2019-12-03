@@ -408,6 +408,7 @@ function animate(time = 0) {
 	// }else {
 	// 	canvas.style.cursor = 'default'
 	// }
+	console.log('anumate enable')
 
 	sim.update()
 	sim.render(ctx)

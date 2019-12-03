@@ -184,6 +184,10 @@ export class Line {
 		this.feeder.draw(ctx)
 		this.outBuf.draw(ctx)
 
+		// draw the connection between feeder and first line buffer
+		this._drawFeederConnection(ctx, this.feeder)
+
+
 		// draw the connections and stations
 		for (let s of this.stations) {
 			this._drawConnections(ctx, s)
@@ -220,7 +224,6 @@ export class Line {
 		ctx.lineTo(s.outBuf.x, s.outBuf.y)
 		ctx.moveTo(s.x, s.y)
 		ctx.lineTo(s.rack.x, s.rack.y)
-
 		ctx.stroke()
 
 		s.nextStations.forEach(obj => {
@@ -230,6 +233,16 @@ export class Line {
 			ctx.stroke()
 			this._drawConnections(ctx, obj)
 		})
+	}
+	_drawFeederConnection(ctx, feeder){
+		if(!feeder) { return }
+		console.log(feeder.name, " ", feeder.outBuf.name )
+		ctx.beginPath()
+		ctx.lineWidth = 1
+		ctx.strokeStyle = 'rgb(192,192,192)'
+		ctx.moveTo(feeder.x, feeder.y)
+		ctx.lineTo(feeder.outBuf.x, feeder.outBuf.y)
+		ctx.stroke()
 	}
 
 	_drawStation(ctx, s) {
