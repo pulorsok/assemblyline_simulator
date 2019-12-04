@@ -26,10 +26,11 @@ export class Feeder{
 	pop_wpc() {
 		// removes an item from the buffer according to the FIFO principle
 		// if there are no WPCs to be removed the returned value is undefined
-		let wpc = this.WPCs.shift()
-		this.outBuf.addItem(wpc)
-
-		console.log('pop wpc')
+		if(this.outBuf.isEmpty){
+			let wpc = this.WPCs.shift()
+			this.outBuf.addItem(wpc)
+		}
+		
 	}
 
 	isFull() {

@@ -23,7 +23,7 @@ export class Station {
 		// this.inBuf = options.inBuf
 		// this.outBuf = options.outBuf
 		// this.status = StationStatus.IDLE
-		// this.procedure = NaN
+		this.procedure = options.procedure
 		
 		this.pLine = line
 		this.name = options.name
@@ -48,6 +48,7 @@ export class Station {
 		this.updated = false
 		this.t = 0
 	
+		console.log(this.procedure)
 		if (this.inBuf) {
 			this.inBuf.outStn.push(this)
 		}
@@ -137,6 +138,16 @@ export class Station {
 							let item = this.inBuf.removeItem()
 							// let components = this.rack.removeItem(10)
 							if (item !== undefined) {
+
+								// Check sufficient
+								
+								if (!this.rack.is_sufficient(this.procedure.consume_material)){
+									this.state = Station.WAITING
+									this.tWait++
+									console.log('insufficient in ' + this.name);
+									break
+								}
+								
 								this.state = StationState.BUSY
 								this.tStart = t
 								this.item = item

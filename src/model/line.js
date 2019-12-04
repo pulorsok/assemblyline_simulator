@@ -76,9 +76,13 @@ export class Line {
 		// starting with the last station(s)
 		this.timeStep++
 		
+		if (this.feeder.outBuf.isEmpty()){
+			this.feeder.pop_wpc()
+		}
+
+
 		if (0 && this.timeStep % this.inputPeriod == 0) {			
 			this.feeder.addWPC(new Item())
-			this.feeder.pop_wpc()
 		}
 
 		// set station updated flag to false
@@ -236,7 +240,6 @@ export class Line {
 	}
 	_drawFeederConnection(ctx, feeder){
 		if(!feeder) { return }
-		console.log(feeder.name, " ", feeder.outBuf.name )
 		ctx.beginPath()
 		ctx.lineWidth = 1
 		ctx.strokeStyle = 'rgb(192,192,192)'

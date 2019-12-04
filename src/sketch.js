@@ -29,6 +29,9 @@ import { Color } from './support/color'
 import { Rack } from './model/rack.js'
 import { Feeder } from './model/feeder'
 import { loadImage, loadAudio } from './support/loaders'
+import { Material } from './support/material'
+import { Box } from './model/box'
+import { Procedure} from './model/procedure'
 
 const canvas = document.getElementById('simulation')
 const ctx = canvas.getContext('2d')
@@ -77,30 +80,71 @@ class Simulation {
 	constructor(options) {
 		this.options = options
 		this.started = false
-		
-		let L1 = new Buffer({name: 'L1', capacity: 1, x: 250, y: canvas.height/2 })
 
-		let feeder = new Feeder({name: 'Feeder', outBuf: L1, MAX_WPC: 5, x: 100, y: canvas.height/2})
-		let out_buf = new Buffer({name: 'out bufer', capacity: 100, x: 900, y: canvas.height/2 })
 		
-		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, x: 500, y: canvas.height/2-100})
+
+		// Material
+		let M1 = new Material({id: 1, type_name: 'legoA', full_amount: 45})
+		let M2 = new Material({id: 2, type_name: 'legoB', full_amount: 60})
+		let M3 = new Material({id: 3, type_name: 'legoC', full_amount: 50})
+
+		// Box
+		let B1 = new Box({id: 11, name: 'B1_m1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
+		let B2 = new Box({id: 12, name: 'B2_m1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
+		let B3 = new Box({id: 13, name: 'B3_m1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
+		let B4 = new Box({id: 14, name: 'B4_m2', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
+		let B5 = new Box({id: 15, name: 'B5_m2', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
+		let B6 = new Box({id: 16, name: 'B6_m2', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
+		let B7 = new Box({id: 17, name: 'B7_m3', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
+		let B8 = new Box({id: 18, name: 'B8_m3', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
+		
+		let BoxArrangement = [
+			[B1, B4, B7],
+			[B2, B5, B8],
+			[B3, B6]
+		]
+
+		// Procedure
+		let p1 = new Procedure({
+			id: 1, 
+			product: "Car1",
+			step: 1,
+			consume_material: {1: 5, 2: 3, 3: 4},
+			working_time: 400,
+			deviation: 0.1
+		})
+		
+		// Line Buffer
+		let L1 = new Buffer({name: 'L1', capacity: 1, x: 250, y: canvas.height/2 })
+		let out_buf = new Buffer({name: 'out bufer', capacity: 100, x: 900, y: canvas.height/2 })
+
+		// Feeder
+		let feeder = new Feeder({name: 'Feeder', outBuf: L1, MAX_WPC: 5, x: 100, y: canvas.height/2})
+		
+		// Rack
+		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, box_arrangement: BoxArrangement,x: 500, y: canvas.height/2-100})
+
+		// Test Line
 		this.testLine = new Line({
 				name: 'Assembly Line',
 				feeder: feeder,
 				outBuf: out_buf,
 				inputPeriod: 1
 		})
+
+		// Station
 		const S1 = new Station(this.testLine, {
 			name: 'Station 1',
 			rack: this.R1,
 			inBuf: L1,
 			outBuf: out_buf,
-			tpTime: 75,
+			tpTime: 30,
 			pFail: 0.005,
 			tRepair: 20,
 			cNum: 3,
 			x: 500,
-			y: canvas.height / 2
+			y: canvas.height / 2,
+			procedure: p1
 		})
 		this.testLine.stations = [S1]
 		this.stations = [S1]
@@ -284,7 +328,6 @@ class Simulation {
 			// auto-add input and auto-remove output
 			if (this.options.autoAddInput) {	
 				this.testLine.feeder.addWPC(new Item())
-				this.testLine.feeder.pop_wpc()
 				// this.R1.feeding()
 				// this.R2.feeding()
 				// this.R3.feeding()
@@ -408,8 +451,7 @@ function animate(time = 0) {
 	// }else {
 	// 	canvas.style.cursor = 'default'
 	// }
-	console.log('anumate enable')
-
+	
 	sim.update()
 	sim.render(ctx)
 	
