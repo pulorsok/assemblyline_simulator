@@ -7,31 +7,53 @@ import { ENGINE_METHOD_PKEY_ASN1_METHS } from "constants"
 const MAX_BUFFER_CAPACITY = 100
 const TWO_PI = 2 * Math.PI
 
+export const RackState = {
+	WAITING: 0,
+	BUSY: 1,
+	REPAIR: 2
+}
 
 
 export class Rack {
 
 	constructor(options) {
+
+		
+		
 		this.name = options.name		
 		this.rack_row = options.rack_row
 		this.rack_col = options.rack_col 
 		this.x = options.x
 		this.y = options.y
+		this.rTime = options.rTime
 		this.MAX_BOX = 0
 		this.box_arrangement = options.box_arrangement
+		this.abox_back = []
 		// this.station = options.station
 		this.available_box = []
 		this.candidate_box = []  
+
+		this.state = RackState.WAITING
+		this.rqBoxs = []
+		this.tStart = null
+		this.rBox = null		
+		this.t = 0
+		this.replen = false
+
 		
-		let Boxs = [this.rack_row][this.rack_col]
+ 
+		for (var i = 0; i < options.box_arrangement.length; i++)
+			this.abox_back[i] = options.box_arrangement[i].slice();
+
+
+		for (let i = 0; i < this.box_arrangement.length; i++) {
+			for (let j = 0; j < this.box_arrangement[i].length; j++) {
+				this.box_arrangement[i][j].rack = this.name
+				this.box_arrangement[i][j].position = {row: i, col: j}
+			}
+		}
 		
 		if(this.box_arrangement){
-			// for (let i = 0; i < this.rack_row; i++) {
-			// 	for (let j = 0; j < this.rack_col; j++) {
-			// 		if 
-			// 		Boxs[i][j]			
-			// 	}
-			// }
 			this.priority_assign(this.box_arrangement)
 		}
 		
@@ -40,9 +62,6 @@ export class Rack {
 		
 			
 		
-	}
-	consume_material(menu){
-	
 	}
 	priority_assign(b){
 		let arr = []
@@ -64,22 +83,34 @@ export class Rack {
 		for (let i = 0; i < this.box_arrangement.length; i++) {
 			for (let j = 0; j < this.box_arrangement[i].length; j++) {
 				if(this.box_arrangement[i][j] === add)
-					this.box_arrangement[i][j] = NaN
+					this.box_arrangement[i][j] = null
 				if(this.box_arrangement[i][j] === remove)
 					this.box_arrangement[i][j] = add
 			}
 		}
 	}
-	remove(remove, add){
-		if (this.candidate_box.indexOf(add) !== -1) this.available_box.splice(this.candidate_box.indexOf(add), 1);
-		this.available_box.push(add)
-		if (this.candidate_box.indexOf(add) !== -1) this.candidate_box.splice(this.candidate_box.indexOf(add), 1);
+	remove(aBox, cBox){
+		if (this.candidate_box.indexOf(cBox) !== -1) 
+			this.candidate_box.splice(this.candidate_box.indexOf(cBox), 1);
+		if (this.available_box.indexOf(aBox) !== -1) 
+			this.available_box.splice(this.available_box.indexOf(aBox), 1);
+		this.available_box.push(cBox)
+		
 	}
 	add_box(box){
 
 	}
+	consume_material(menu){
+		for(let m in menu){
+			const b = this.available_box.find(function(e){
+				return e.material.id == m				
+			})
+			if(b){
+				b.consume(menu[m])
+			}
+		}
+	}
 	is_sufficient(menu){
-		console.log("=========== check suff ===============")
 		for(let m in menu){
 			
 			const b = this.available_box.find(function(e){
@@ -88,30 +119,23 @@ export class Rack {
 
 			if(b){
 				if(menu[m]>b.stock){
-					// available insufficient
-
-					
-					// switch cadidate					
-					
+		
 					const cB = this.candidate_box.find(function(e){
 						return e.material.id == m				
-					})
-					console.log("cadidate : ", cB)
+					})	
 					if(!cB){
 						console.log("empty material")
 						return false
 					}
-					
-					// console.log("available : " , this.available_box)
-					// console.log("candidate : ", this.candidate_box)
-					this.remove(b, cB)
-					this.replace(b, cB)
-					console.log("consume ", cB.material.id)
-					cB.consume(menu[m])
+					// put empty box to replensighmen queue
+					this.rqBoxs.push(b)
+					this.replen = true
+					this.remove(b, cB) // switch cadidate to available
+					this.replace(b, cB) // move down new box to bottom
+					// cB.consume(menu[m])
 					continue
 				}
-				console.log("consume ", b.material.id)
-				b.consume(menu[m])
+				// b.consume(menu[m])
 				
 			}
 			// this.available_box.forEach(b => {
@@ -135,12 +159,100 @@ export class Rack {
 		}
 		return true
 	}
-	
-	
-	
+	replenishment(re){
+		this.replen = re
 
+	}
+	reset(){
+		
+		console.log("rack reset")
+		this.available_box = []
+		this.candidate_box = []  
+		this.state = RackState.WAITING
+		this.rqBoxs = []
+		this.tStart = null
+		this.rBox = null		
+		this.t = 0
+		this.replen = false
 
+		for (var i = 0; i < this.abox_back.length; i++)
+			this.box_arrangement[i] = this.abox_back[i].slice();
+		
+		for (let i = 0; i < this.box_arrangement.length; i++) {
+			for (let j = 0; j < this.box_arrangement[i].length; j++) {
+				if(this.box_arrangement[i][j] !== undefined){
+					this.box_arrangement[i][j].rack = this.name
+					this.box_arrangement[i][j].position = {row: i, col: j}
+					this.box_arrangement[i][j].reset()
+				}
+				
+			}
+		}
+		
+		if(this.box_arrangement){
+			this.priority_assign(this.box_arrangement)
+		}
+		
+	}
+	update(t){ 
 
+		if(this.replen){
+			this.t = t
+
+			switch (this.state) {
+				case RackState.WAITING:
+					this.tWait++
+					let rbox = this.rqBoxs.pop()
+					if (rbox !== undefined) {
+						this.state = RackState.BUSY
+						this.tStart = t
+						this.rBox = rbox
+					}else{
+						this.replen = false
+					}
+					
+					break
+				case RackState.BUSY:
+					if (t - this.tStart >= this.rTime) {
+						// replace full box into rack
+						this.rBox.replenish()
+						let row = this.rBox.position["row"]
+						let col = this.rBox.position["col"]
+						for (let i = 1; i < this.box_arrangement.length; i++) {
+							if (this.box_arrangement[i][col] == undefined){
+								this.box_arrangement[i][col] = this.rBox
+								this.candidate_box.push(this.rBox)
+								this.rBox = null
+								this.state = RackState.WAITING
+								break
+							}
+							
+						}
+
+						// if(this.box_arrangement[row][col] !== undefined){
+						// 	this.box_arrangement[row][col] = this.rBox
+						// 	this.rBox = null
+						// 	this.state = RackState.WAITING
+						// }else{
+						// 	console.log("error in rearrangement box position")
+						// }		
+											
+							
+						
+					}else {
+						//remain in busy state
+						this.tWait++
+					}	
+					break
+				
+			}
+		}
+		
+		
+			
+
+	}
+	
 	draw(ctx) {
 		ctx.font = 'normal 12pt Calibri'
 
@@ -180,9 +292,25 @@ export class Rack {
 					ctx.rect(this.x - w*this.rack_col/2 + w*j, this.y + h*this.rack_row/2 - h*i, pWidth, h)
 					ctx.stroke()
 					ctx.fill()
+					ctx.textAlign = 'center'
+					ctx.textBaseline = 'middle'
+					ctx.fillStyle = '#fff'
+					ctx.fillText(element.name, this.x - w*this.rack_col/2 + w*j + w/2, this.y + h*this.rack_row/2 - h*i + h/2)
 				}
 			}
 		}
+		ctx.beginPath()
+		ctx.strokeStyle = '#fff'
+		ctx.lineWidth = 1
+		ctx.rect(this.x - w/2, this.y - h*(this.rack_row/2) - h/2, w, h)
+		ctx.stroke()
+
+		ctx.beginPath()
+		let tWidth = this._getReplenishWidth(this.t-this.tStart)*w
+		if (tWidth > w){ tWidth = w }
+		ctx.fillStyle = 'rgb(102,102,102)'
+		ctx.rect(this.x - w/2, this.y - h*(this.rack_row/2) - h/2, tWidth, h)
+		ctx.fill()
 
 		// ctx.beginPath()
 		// ctx.strokeStyle = '#fff'
@@ -209,5 +337,8 @@ export class Rack {
 
 	_getRectWidth(e){
 		return e.stock / e.capacity
+	}
+	_getReplenishWidth(n){
+		return n / this.rTime
 	}
 }

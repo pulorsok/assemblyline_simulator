@@ -7,11 +7,13 @@ import { Color } from '../support/color'
 const COLOR_WAITING = new Color(0, 0, 200)
 const COLOR_BUSY = new Color(0, 200, 0)
 const COLOR_REPAIR = new Color(200, 0, 0)
+const COLOR_IDLE = new Color(200, 100, 100)
 
 export const StationState = {
 	WAITING: 0,
 	BUSY: 1,
-	REPAIR: 2
+	REPAIR: 2,
+	IDLE:3
 }
 
 export class Station {
@@ -33,7 +35,6 @@ export class Station {
 		this.tpTime = options.tpTime
 		this.pFail = options.pFail
 		this.tRepair = options.tRepair
-		this.cNum = options.cNum
 		this.x = options.x
 		this.y = options.y
 		this.prevStations = []
@@ -45,7 +46,7 @@ export class Station {
 		this.tProd = 0
 		this.tWait = 0
 		this.item = null
-		this.updated = false
+		this.updated = false		
 		this.t = 0
 	
 		console.log(this.procedure)
@@ -56,21 +57,8 @@ export class Station {
 			this.outBuf.inStn.push(this)
 		}	
 	}
-	get_procedure(){
-		
-	}
-	is_WPC(){
-		
-	}
-	is_rack(){
-		
-	}
-	set_rack(rack){
-
-	}
-	set_procedure(procedure){
-
-	}
+	
+	
 	reset() {
 		console.log(`Reset station ${this.name}`)
 
@@ -79,6 +67,9 @@ export class Station {
 		}
 		if (this.outBuf) {
 			this.outBuf.reset()
+		}
+		if (this.rack){
+			this.rack.reset()
 		}
 		this.state = StationState.WAITING
 		this.tStart = NaN
@@ -99,21 +90,49 @@ export class Station {
 	update(t) {
 		//let t = this.pLine.getTime();
 		this.t = t
-		if (this.updated) { return }
+		if (this.updated) {return}
 	
+		
+		this.rack.update(t)
+		
+
 		switch (this.state) {
 			case StationState.WAITING:
 				this.tWait++
 				// get an item from the rack buffer (if anything there)
 				let item = this.inBuf.removeItem()
-				// let components = this.rack.removeItem(this.cNum)
 				if (item !== undefined) {
+					
+					this.item = item
+					// this.procedure = item.procedure
+					if (!this.rack.is_sufficient(this.procedure.consume_material)){
+						this.state = StationState.IDLE
+						this.tStart = t
+						console.log('insufficient in ' + this.name);
+						break
+				
+					}
+					this.rack.consume_material(this.procedure.consume_material)
 					this.state = StationState.BUSY
 					this.tStart = t
-					this.item = item
+					
 					
 				}
+				
 
+				break
+		
+			case StationState.IDLE:
+				if (!this.rack.is_sufficient(this.procedure.consume_material)){
+					// Check sufficient				
+					this.tWait++
+					this.tStart = t
+					break
+				}
+				this.rack.consume_material(this.procedure.consume_material)
+				this.state = StationState.BUSY
+				this.tStart = t
+				
 				break
 			
 			case StationState.BUSY:
@@ -132,26 +151,10 @@ export class Station {
 							this.tStart = t
 							console.log('Failure in ' + this.name);
 						}else {
-							// this.state = StationState.WAITING;						
-							// this.tStart = t;
+							this.state = StationState.WAITING;						
+							this.tStart = t;
 							// get an item from the input buffer (if anything there)
-							let item = this.inBuf.removeItem()
-							// let components = this.rack.removeItem(10)
-							if (item !== undefined) {
-
-								// Check sufficient
-								
-								if (!this.rack.is_sufficient(this.procedure.consume_material)){
-									this.state = Station.WAITING
-									this.tWait++
-									console.log('insufficient in ' + this.name);
-									break
-								}
-								
-								this.state = StationState.BUSY
-								this.tStart = t
-								this.item = item
-							}						
+												
 						}
 					}else {
 						//remain in busy state
@@ -222,6 +225,9 @@ export class Station {
 				break
 			case StationState.REPAIR:
 				clr = 'rgb(200,0,0)'
+				break
+			case StationState.IDLE:
+				clr = 'rgb(100,100,100)'
 				break
 		}
 		ctx.beginPath()

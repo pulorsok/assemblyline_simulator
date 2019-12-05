@@ -89,14 +89,14 @@ class Simulation {
 		let M3 = new Material({id: 3, type_name: 'legoC', full_amount: 50})
 
 		// Box
-		let B1 = new Box({id: 11, name: 'B1_m1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
-		let B2 = new Box({id: 12, name: 'B2_m1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
-		let B3 = new Box({id: 13, name: 'B3_m1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
-		let B4 = new Box({id: 14, name: 'B4_m2', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
-		let B5 = new Box({id: 15, name: 'B5_m2', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
-		let B6 = new Box({id: 16, name: 'B6_m2', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
-		let B7 = new Box({id: 17, name: 'B7_m3', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
-		let B8 = new Box({id: 18, name: 'B8_m3', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
+		let B1 = new Box({id: 11, name: 'B1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
+		let B2 = new Box({id: 12, name: 'B2', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
+		let B3 = new Box({id: 13, name: 'B3', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
+		let B4 = new Box({id: 14, name: 'B4', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
+		let B5 = new Box({id: 15, name: 'B5', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
+		let B6 = new Box({id: 16, name: 'B6', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
+		let B7 = new Box({id: 17, name: 'B7', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
+		let B8 = new Box({id: 18, name: 'B8', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
 		
 		let BoxArrangement = [
 			[B1, B4, B7],
@@ -121,9 +121,7 @@ class Simulation {
 		// Feeder
 		let feeder = new Feeder({name: 'Feeder', outBuf: L1, MAX_WPC: 5, x: 100, y: canvas.height/2})
 		
-		// Rack
-		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, box_arrangement: BoxArrangement,x: 500, y: canvas.height/2-100})
-
+		
 		// Test Line
 		this.testLine = new Line({
 				name: 'Assembly Line',
@@ -131,7 +129,19 @@ class Simulation {
 				outBuf: out_buf,
 				inputPeriod: 1
 		})
+		// Rack
+		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, rTime: 250, box_arrangement: BoxArrangement,x: 500, y: canvas.height/2-100})
 
+
+		// Warehause
+		const Warehause = new Station(this.testLine, {
+			name: 'Warehause',
+			rack: this.R1,
+			tpTime: 300,
+			tRepair: 20,
+			x: 500,
+			y: canvas.height / 2,
+		})
 		// Station
 		const S1 = new Station(this.testLine, {
 			name: 'Station 1',
@@ -141,13 +151,13 @@ class Simulation {
 			tpTime: 30,
 			pFail: 0.005,
 			tRepair: 20,
-			cNum: 3,
 			x: 500,
 			y: canvas.height / 2,
 			procedure: p1
 		})
 		this.testLine.stations = [S1]
 		this.stations = [S1]
+		
 
 		// // create FIFO-buffers (to be used in between stations)
 		// // maximum buffer capacity is 100 units
