@@ -25,8 +25,6 @@ export class Box {
 		return
 	}
 	consume(n){
-		
-		console.log("box consuming => ", this.name, this.stock)
 		return this.stock -= n
 	}
 	replenish(){

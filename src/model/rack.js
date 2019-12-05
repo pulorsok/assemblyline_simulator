@@ -41,15 +41,17 @@ export class Rack {
 		this.replen = false
 
 		
- 
 		for (var i = 0; i < options.box_arrangement.length; i++)
 			this.abox_back[i] = options.box_arrangement[i].slice();
 
 
 		for (let i = 0; i < this.box_arrangement.length; i++) {
 			for (let j = 0; j < this.box_arrangement[i].length; j++) {
-				this.box_arrangement[i][j].rack = this.name
-				this.box_arrangement[i][j].position = {row: i, col: j}
+				if(this.box_arrangement[i][j] !== undefined){
+					this.box_arrangement[i][j].rack = this.name
+					this.box_arrangement[i][j].position = {row: i, col: j}
+				}
+				
 			}
 		}
 		
@@ -68,7 +70,7 @@ export class Rack {
 		for (let i = 0; i < b.length; i++) {
 			for (let j = 0; j < b[i].length; j++) {				
 				let obj
-				if(b[i][j] !== 'undefined' && b[i][j] !== null){
+				if(b[i][j] !== undefined && b[i][j] !== null){
 						obj = b[i][j];
 						if (!arr.find(el => el === obj.material)) {
 							this.available_box.push(obj) 		
@@ -271,20 +273,39 @@ export class Rack {
 		}
 		for (let i = 0; i < this.box_arrangement.length; i++) {
 			for (let j = 0; j < this.box_arrangement[i].length; j++) {
+				
 				const element = this.box_arrangement[i][j];
-				if(element){
+				if(element !== undefined && element){
 					ctx.beginPath()
 					ctx.strokeStyle = '#fff'
 					ctx.lineWidth = 1
-					switch(element["material"].id){
+					switch(element.material.id){
 						case 1:
-							ctx.fillStyle = 'rgb(120,20,12)'
+							ctx.fillStyle = 'rgb(245,66,66)'
 							break
 						case 2:
-							ctx.fillStyle = 'rgb(102,20,102)'
+							ctx.fillStyle = 'rgb(245,170,66)'
 							break
 						case 3:
-							ctx.fillStyle = 'rgb(20,20,102)'
+							ctx.fillStyle = 'rgb(245,239,66)'
+							break
+						case 4:
+							ctx.fillStyle = 'rgb(176,245,66)'
+							break
+						case 5:
+							ctx.fillStyle = 'rgb(72,245,66)'
+							break
+						case 6:
+							ctx.fillStyle = 'rgb(66,245,185)'
+							break
+						case 7:
+							ctx.fillStyle = 'rgb(66,164,245)'
+							break
+						case 8:
+							ctx.fillStyle = 'rgb(158,66,245)'
+							break
+						case 9:
+							ctx.fillStyle = 'rgb(245,66,215)'
 							break
 					}
 					let pWidth = this._getRectWidth(element)*w
