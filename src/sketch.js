@@ -96,81 +96,40 @@ class Simulation {
 
 		let Ms = [M1,M2,M3,M4,M5,M6,M7,M8,M9]
 
-		// Box
-		// let B1 = new Box({id: 11, name: 'B1', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
-		// let B2 = new Box({id: 12, name: 'B2', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
-		// let B3 = new Box({id: 13, name: 'B3', capacity: M1.full_amount, material: M1, replenishment_delay: 5})
-		// let B4 = new Box({id: 14, name: 'B4', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
-		// let B5 = new Box({id: 15, name: 'B5', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
-		// let B6 = new Box({id: 16, name: 'B6', capacity: M2.full_amount, material: M2, replenishment_delay: 5})
-		// let B7 = new Box({id: 17, name: 'B7', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
-		// let B8 = new Box({id: 18, name: 'B8', capacity: M3.full_amount, material: M3, replenishment_delay: 5})
-
-
-		// test
 			
 		let test = [
-			[1,2,3],
-			[2,3,5],
+			[1,2,3,4,5,6,7,8],
+			[2,3,5,2,6,7],
 			[1,4,5,6],
 			[3,7,8],
 			[9,1,3,2]
 		]
 
 
-		let As = []
-		let n = 1
-		for (let i = 0; i < 5; i++) {
-			let test_A = new Array(4)
-			for (let i = 0; i < test_A.length; i++) {
-				test_A[i] = []
-			}
-
-
-			for (let j = 0; j < test[i].length; j++) {
-				for (let x = 0; x < this._getRandomInt(2,4); x++) {
-					const name = "B" + n.toString()
-					
-					test_A[x][j] = new Box({id: n, name: name, capacity: Ms[test[i][j]-1].full_amount, material: Ms[test[i][j]-1], replenishment_delay: 5})
-					console.log(test_A[x][j].material.id)
-					n++
-				}
-			}
-			As[i] = test_A
-		}
-
-		//
 		
-		// let A1 = [
-		// 	[B1, B4, B7],
-		// 	[B2, B5, B8],
-		// 	[B3, B6]
-		// ]
-		// let A2 = [
-		// 	[B1, B4, B7],
-		// 	[B2, B5, B8],
-		// 	[B3, B6]
-		// ]
-		// let A3 = [
-		// 	[B1, B4, B7],
-		// 	[B2, B5, B8],
-		// 	[B3, B6]
-		// ]
-		// let A4 = [
-		// 	[B1, B4, B7],
-		// 	[B2, B5, B8],
-		// 	[B3, B6]
-		// ]
-		// let A5 = [
-		// 	[B1, B4, B7],
-		// 	[B2, B5, B8],
-		// 	[B3, B6]
-		// ]
-		[1,2,3],
-		[2,3,5],
-		[1,4,5,6],
-		[3,7,8],
-		[9,1,3,2]
+		let n = 1
+		let As = new Array(test.length)
+		for (let i = 0; i < As.length; i++) {
+			As[i] = []
+		}
+		for (let i = 0; i < test.length; i++) {
+			for (let j = 0; j < test[i].length; j++) {
+				const name = "B" + n.toString()
+
+				As[i][j] = new Box({
+					id: n, 
+					name: name, 
+					capacity: Ms[test[i][j]-1].full_amount,
+					material: Ms[test[i][j]-1],
+					replenishment_delay: 3
+				})
+				n++
+			}
+			
+		}
+		
+
+		
 		// Procedure
 		let p1 = new Procedure({
 			id: 1, 
@@ -235,11 +194,16 @@ class Simulation {
 				inputPeriod: 1
 		})
 		// Rack
-		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, rTime: 250, box_arrangement: As[0],x: 300, y: canvas.height/2-100})
-		this.R2 = new Rack({name: 'R2',rack_row: 4, rack_col: 4, rTime: 250, box_arrangement: As[1],x: 500, y: canvas.height/2-100})
-		this.R3 = new Rack({name: 'R3',rack_row: 4, rack_col: 4, rTime: 250, box_arrangement: As[2],x: 700, y: canvas.height/2-100})
-		this.R4 = new Rack({name: 'R4',rack_row: 4, rack_col: 4, rTime: 250, box_arrangement: As[3],x: 900, y: canvas.height/2-100})
-		this.R5 = new Rack({name: 'R5',rack_row: 4, rack_col: 4, rTime: 250, box_arrangement: As[4],x: 1100, y: canvas.height/2-100})
+		console.log('rack 1')
+		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[0],x: 300, y: canvas.height/2-100})
+		console.log('rack 2')
+		this.R2 = new Rack({name: 'R2',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[1],x: 500, y: canvas.height/2-100})
+		console.log('rack 3')
+		this.R3 = new Rack({name: 'R3',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[2],x: 700, y: canvas.height/2-100})
+		console.log('rack 4')
+		this.R4 = new Rack({name: 'R4',rack_row: 7, rack_col: 7, rTime: 0, material_demands: As[3],x: 900, y: canvas.height/2-100})
+		console.log('rack 5')
+		this.R5 = new Rack({name: 'R5',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[4],x: 1100, y: canvas.height/2-100})
 
 
 
@@ -249,7 +213,7 @@ class Simulation {
 			rack: this.R1,
 			inBuf: L1,
 			outBuf: L2,
-			tpTime: 30,
+			tpTime: 0.0000003,
 			pFail: 0.005,
 			tRepair: 20,
 			x: 300,
@@ -261,8 +225,8 @@ class Simulation {
 			rack: this.R2,
 			inBuf: L2,
 			outBuf: L3,
-			tpTime: 12,
-			pFail: 0.005,
+			tpTime: 0.0000003,
+			pFail: 0,
 			tRepair: 20,
 			x: 500,
 			y: canvas.height / 2,
@@ -273,8 +237,8 @@ class Simulation {
 			rack: this.R3,
 			inBuf: L3,
 			outBuf: L4,
-			tpTime: 23,
-			pFail: 0.005,
+			tpTime: 0.0000003,
+			pFail: 0,
 			tRepair: 20,
 			x: 700,
 			y: canvas.height / 2,
@@ -285,8 +249,8 @@ class Simulation {
 			rack: this.R4,
 			inBuf: L4,
 			outBuf: L5,
-			tpTime: 41,
-			pFail: 0.005,
+			tpTime: 0.0000003,
+			pFail: 0,
 			tRepair: 20,
 			x: 900,
 			y: canvas.height / 2,
@@ -297,8 +261,8 @@ class Simulation {
 			rack: this.R5,
 			inBuf: L5,
 			outBuf: out_buf,
-			tpTime: 25,
-			pFail: 0.005,
+			tpTime: 0.0000003,
+			pFail: 0,
 			tRepair: 20,
 			x: 1100,
 			y: canvas.height / 2,

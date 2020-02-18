@@ -27,7 +27,13 @@ export class Rack {
 		this.y = options.y
 		this.rTime = options.rTime
 		this.MAX_BOX = 0
-		this.box_arrangement = options.box_arrangement
+		this.material_demands = options.material_demands
+		this.box_arrangement = new Array(this.rack_row)
+
+		for (var i = 0; i < this.box_arrangement.length; i++) {
+			this.box_arrangement[i] = new Array(this.rack_col);
+		}
+
 		this.abox_back = []
 		// this.station = options.station
 		this.available_box = []
@@ -41,17 +47,37 @@ export class Rack {
 		this.replen = false
 
 		
-		for (var i = 0; i < options.box_arrangement.length; i++)
-			this.abox_back[i] = options.box_arrangement[i].slice();
+		// back end
+		// for (var i = 0; i < options.box_arrangement.length; i++)
+		// 	this.abox_back[i] = options.box_arrangement[i].slice();
+		this.abox_back = options.material_demands;
 
 
-		for (let i = 0; i < this.box_arrangement.length; i++) {
-			for (let j = 0; j < this.box_arrangement[i].length; j++) {
-				if(this.box_arrangement[i][j] !== undefined){
+		// i = station number, j = material number
+		// for (let i = 0; i < this.box_arrangement.length; i++) {
+		// 	for (let j = 0; j < this.box_arrangement[i].length; j++) {
+		// 		if(this.box_arrangement[i][j] !== undefined){
+		// 			this.box_arrangement[i][j].rack = this.name
+		// 			this.box_arrangement[i][j].position = {row: i, col: j}
+		// 		}
+				
+		// 	}
+		// }
+		let number = 0
+		
+		for (let i = 0; i < this.rack_row; i++) {
+			for (let j = 0; j < this.rack_col; j++) {
+				if(this.material_demands[number] !== undefined && this.material_demands[number] !== null){
+					console.log('i = ',i)
+					console.log('j = ',j)
+					console.log('number = ', number)
+					console.log('box = ', this.material_demands[number])
+					this.box_arrangement[i][j] = this.material_demands[number];
 					this.box_arrangement[i][j].rack = this.name
 					this.box_arrangement[i][j].position = {row: i, col: j}
-				}
-				
+					
+				}	
+				number++;
 			}
 		}
 		
