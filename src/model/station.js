@@ -60,7 +60,6 @@ export class Station {
 	
 	
 	reset() {
-		console.log(`Reset station ${this.name}`)
 
 		if (this.inBuf) {
 			this.inBuf.reset()

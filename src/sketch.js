@@ -337,9 +337,15 @@ $('#alarm-audio').trigger('load', e => {
 
 class Simulation {
 	constructor(options) {
+		this.time_step = 0;
+		this.start_time = 0;
+		this.time_period = 3;
 		this.options = options
 		this.started = false
-		
+		this.current_productivity = 0;
+		this.material_inventory = 0;
+		this.material_demands = 0;
+		this.cycle_time = 3;
 		let Ms = []
 		for(const material in material_list){
 			var capacity;
@@ -386,7 +392,7 @@ class Simulation {
 			product: "Car1",
 			step: 1,
 			consume_material: material_demands['quad']['1'],
-			working_time: 3,
+			working_time: this.cycle_time,
 			deviation: 0.1
 		})
 		let p2 = new Procedure({
@@ -394,7 +400,7 @@ class Simulation {
 			product: "Car1",
 			step: 2,
 			consume_material: material_demands['quad']['2'],
-			working_time: 3,
+			working_time: this.cycle_time,
 			deviation: 0.1
 		})
 		let p3 = new Procedure({
@@ -402,7 +408,7 @@ class Simulation {
 			product: "Car1",
 			step: 3,
 			consume_material: material_demands['quad']['3'],
-			working_time: 3,
+			working_time: this.cycle_time,
 			deviation: 0.1
 		})
 		let p4 = new Procedure({
@@ -410,7 +416,7 @@ class Simulation {
 			product: "Car1",
 			step: 4,
 			consume_material: material_demands['quad']['4'],
-			working_time: 3,
+			working_time: this.cycle_time,
 			deviation: 0.1
 		})
 		let p5 = new Procedure({
@@ -418,7 +424,7 @@ class Simulation {
 			product: "Car1",
 			step: 5,
 			consume_material: material_demands['quad']['5'],
-			working_time: 3,
+			working_time: this.cycle_time,
 			deviation: 0.1
 		})
 		
@@ -450,7 +456,7 @@ class Simulation {
 		this.R4 = new Rack({name: 'R4',rack_row: 5, rack_col: 5, rTime: 12, material_demands: arrangement['4'],x: 900, y: canvas.height/2-100})
 		this.R5 = new Rack({name: 'R5',rack_row: 4, rack_col: 4, rTime: 12, material_demands: arrangement['5'],x: 1100, y: canvas.height/2-100})
 
-
+		this.Racks = [this.R1, this.R2, this.R3, this.R4, this.R5];
 
 		// Station
 		const S1 = new Station(this.testLine, {
@@ -537,7 +543,66 @@ class Simulation {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}
 	
+	inventory_mesurement(){
+		console.log("inventory measurement")
+		this.fitness_inventory = {}
+		this.Racks.forEach(rack => {
+			let inventory_list = rack.get_inventory()
+			for (const key in inventory_list) {
+				const element = inventory_list[key];
+				if(this.fitness_inventory[key] !== undefined){
+					this.fitness_inventory[key] = this.fitness_inventory[key] + element
+				}else{
+					this.fitness_inventory[key] = element
+				}
+				
+			}
+		});
+		var inventory_demands = {}
+		for (const station in material_demands['quad']) {
+			if (material_demands['quad'].hasOwnProperty(station)) {
+				const demands = material_demands['quad'][station];
+				for (const key in demands) {
+					if (demands.hasOwnProperty(key)) {
+						const element = demands[key];
+						if (inventory_demands[key] !== undefined){
+							inventory_demands[key] = inventory_demands[key] + element
+						}else{ 
+							inventory_demands[key] = element
+						}
+					}
+				}
+				
+			}
+		}
+		// console.log(inventory_demands)
+		for (const key in this.fitness_inventory) {
+			if (this.fitness_inventory.hasOwnProperty(key)) {
+				const element = this.fitness_inventory[key];
+				let cycle = this.time_period/this.cycle_time
+				this.fitness_inventory[key] = element - (inventory_demands[key]*cycle)
+			}
+		}
 
+		// for (const station in material_demands['quad']) {
+		// 	if (material_demands['quad'].hasOwnProperty(station)) {
+		// 		const element = material_demands['quad'][station];
+		// 		for (const key in element) {
+		// 			const demands_percycle = element[key];
+		// 			if (this.fitness_inventory[key] !== undefined){
+		// 				let cycle = this.time_period/this.cycle_time
+		// 				// this.fitness_inventory[key] = this.fitness_inventory[key] - (demands_percycle*cycle)
+		// 				this.fitness_inventory[key] = demands_percycle*cycle
+						
+		// 			}
+		// 		}
+			
+				
+		// 	}
+		// }
+		console.log(this.fitness_inventory)
+		
+	}
 	start() {
 		this.started = true
 	}
@@ -549,6 +614,8 @@ class Simulation {
 	}
 
 	update() {
+		
+		
 		if (!this.started) { return }
 		this.testLine.update()
 	}
@@ -602,11 +669,19 @@ class Simulation {
 
 		// output message
 		ctx.font = 'normal 12pt Calibri'		
-		ctx.fillStyle = 'rgb(236,0,140)'
-		ctx.textAlign = 'center'
-		ctx.textBaseline = 'middle'
-		let y = ctx.canvas.height - 24
-	
+		ctx.fillStyle = 'rgb(255,255,255)'
+		ctx.textAlign = 'left'
+		ctx.textBaseline = 'bottom'
+		let y = ctx.canvas.height - 800
+		let x = ctx.canvas.width -100
+		this.time_step++;
+		if(this.time_step-this.start_time >= this.time_period){
+			this.current_productivity = this.testLine.productivity 	
+			this.start_time = this.time_step
+			this.inventory_mesurement()
+		}
+		
+		ctx.fillText(`Productivity: ${this.current_productivity | 0} units/min`, 310, 24)
 		if (this.testLine.jammed) {
 			ctx.fillText(this.messages.jammed, ctx.canvas.width / 2, y)				
 		}else {

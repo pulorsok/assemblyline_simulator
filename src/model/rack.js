@@ -47,6 +47,7 @@ export class Rack {
 		this.rBox = null		
 		this.t = 0
 		this.replen = false
+		this.inventory = 0
 
 		
 		
@@ -83,12 +84,29 @@ export class Rack {
 		if(this.box_arrangement){
 			this.priority_assign(this.box_arrangement)
 		}
-	
-		
-		
-		
-		
-			
+	}
+
+
+	get_inventory(){
+		let inventory = {}
+		for (let i = 0; i < this.box_arrangement.length; i++) {
+			for (let j = 0; j < this.box_arrangement[i].length; j++) {
+				if(this.box_arrangement[i][j] !== undefined && this.box_arrangement[i][j] !== null){
+					let material = this.box_arrangement[i][j].material.type_name;
+					if(inventory[material] !== undefined){
+						inventory[material] += this.box_arrangement[i][j].stock 
+					}else{
+						let stock = this.box_arrangement[i][j].stock
+						inventory[material] = stock
+					}
+					
+				}
+					
+			}
+		}
+		return inventory
+	}
+	calculate_inventory(){
 		
 	}
 	priority_assign(b){
@@ -134,7 +152,6 @@ export class Rack {
 				if(this.box_arrangement[i][j] == undefined){
 					this.box_arrangement[i][j] = box
 					this.candidate_box.push(box)
-					console.log("add box = ", this.candidate_box)
 					return true
 				}
 					
@@ -193,7 +210,6 @@ export class Rack {
 
 					var cB=false;
 					if (this.candidate_box.length !== 0){
-						console.log("test = ", this.candidate_box)
 						cB = this.candidate_box.find(function(e){
 							return e.material.id == m				
 						})	
@@ -251,7 +267,6 @@ export class Rack {
 	}
 	reset(){
 		
-		console.log("rack reset")
 		this.available_box = []
 		this.candidate_box = []  
 		this.state = RackState.WAITING

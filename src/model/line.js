@@ -24,6 +24,7 @@
 **/
 
 import { StationState } from './station'
+import { productivity } from './data'
 
 const zeroPad = (value, n) => {
 	return value.toString().padStart(n, '0')
@@ -107,7 +108,8 @@ export class Line {
 
 		// calculate productivity
 		this.productivity = this.producedItems / this.timeStep * 60 * 60
-
+		// Data.set_productivity(this.producedItems / this.timeStep * 60 * 60)
+		// productivity = this.producedItems / this.timeStep * 60 * 60
 		if (this.Q.length >= 500) {
 			this.Q.shift();
 		}
@@ -210,9 +212,9 @@ export class Line {
 		ctx.textBaseline = 'bottom'
 
 		ctx.fillText(`Time step: ${zeroPad(this.timeStep, 5)}`, 5, 24)
-		ctx.fillText(`Input: ${zeroPad(this.feeder.WPCs.length, 3)}`, 130, 24)
-		ctx.fillText(`Output: ${zeroPad(this.outBuf.items.length, 3)}`, 215, 24)
-		ctx.fillText(`Productivity: ${this.productivity | 0} units/min`, 310, 24)
+		// ctx.fillText(`Input: ${zeroPad(this.feeder.WPCs.length, 3)}`, 130, 24)
+		// ctx.fillText(`Output: ${zeroPad(this.outBuf.items.length, 3)}`, 215, 24)
+		// ctx.fillText(`Productivity: ${this.productivity | 0} units/min`, 310, 24)
 	}
 		
 	_drawConnections(ctx, s) {
