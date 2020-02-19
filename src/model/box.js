@@ -15,6 +15,7 @@ export class Box {
 		this.material = options.material
 		this.replenishment_delay = options.replenishment_delay
 		this.stock = options.capacity
+		this.color = options.color
 
 	}
 

@@ -1,6 +1,4 @@
-// Polyfills
-// https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+
 if (!String.prototype.padStart) {
 	String.prototype.padStart = function padStart(targetLength,padString) {
 			targetLength = targetLength>>0; //floor if number or convert non-number to 0;
@@ -17,7 +15,267 @@ if (!String.prototype.padStart) {
 			}
 	};
 }
-
+const material_demands = {
+    "quad": {
+        "1": {
+            "303426": 1.0, 
+            "428724": 2.0, 
+            "366501": 2.0, 
+            "242021": 2.0, 
+            "4210660": 1.0, 
+            "370124": 2.0, 
+            "302301": 1.0, 
+            "4632575": 1.0
+        }, 
+        "3": {
+            "4249506": 1.0, 
+            "4211445": 1.0, 
+            "4211525": 2.0, 
+            "4654582": 2.0, 
+            "4504381": 2.0, 
+            "366621": 1.0, 
+            "4121965": 2.0, 
+            "301021": 1.0
+        }, 
+        "2": {
+            "302224": 1.0, 
+            "379521": 1.0, 
+            "4211043": 1.0, 
+            "4654582": 1.0, 
+            "4211094": 1.0, 
+            "302321": 2.0, 
+            "4160857": 1.0, 
+            "4162443": 2.0, 
+            "306924": 1.0, 
+            "4161326": 1.0
+        }, 
+        "5": {
+            "4211445": 1.0, 
+            "4211573": 2.0, 
+            "4211622": 2.0, 
+            "4550937": 2.0, 
+            "4490127": 2.0, 
+            "4632575": 2.0
+        }, 
+        "4": {
+            "4540384": 2.0, 
+            "4211043": 1.0, 
+            "4211622": 2.0, 
+            "370726": 2.0, 
+            "306824": 1.0, 
+            "306924": 3.0, 
+            "4244362": 2.0, 
+            "4244363": 2.0, 
+            "302124": 2.0, 
+            "4490127": 2.0, 
+            "302224": 1.0, 
+            "4504369": 2.0, 
+            "4522035": 2.0, 
+            "4211573": 2.0, 
+            "4654582": 1.0, 
+            "4550937": 2.0, 
+            "303226": 1.0, 
+            "243101": 1.0, 
+            "486526": 2.0
+        }
+    }, 
+    "gokart": {
+        "1": {
+            "428226": 1.0, 
+            "370124": 2.0, 
+            "302024": 1.0, 
+            "306924": 1.0, 
+            "303226": 1.0, 
+            "4162443": 2.0, 
+            "302124": 2.0, 
+            "303426": 1.0
+        }, 
+        "3": {
+            "4540384": 2.0, 
+            "379521": 1.0, 
+            "303426": 1.0, 
+            "4211043": 1.0, 
+            "4654582": 1.0, 
+            "242021": 2.0, 
+            "302024": 1.0, 
+            "302124": 2.0, 
+            "301021": 1.0, 
+            "4244363": 2.0, 
+            "366621": 1.0, 
+            "4121965": 2.0, 
+            "4520782": 2.0, 
+            "302301": 1.0, 
+            "306824": 1.0, 
+            "428724": 2.0, 
+            "4211094": 1.0, 
+            "366501": 2.0, 
+            "4632575": 2.0, 
+            "243101": 1.0, 
+            "4249506": 1.0
+        }, 
+        "2": {
+            "302224": 1.0, 
+            "302321": 4.0, 
+            "4654582": 2.0, 
+            "4190219": 2.0, 
+            "306924": 1.0, 
+            "302301": 1.0, 
+            "486526": 2.0
+        }, 
+        "5": {
+            "4211445": 2.0, 
+            "4522035": 4.0, 
+            "4211622": 2.0, 
+            "4211525": 4.0, 
+            "370726": 2.0, 
+            "4211573": 2.0, 
+            "4550937": 2.0, 
+            "4490127": 2.0
+        }, 
+        "4": {
+            "4540384": 1.0, 
+            "4518992": 2.0, 
+            "4210660": 1.0, 
+            "4211094": 1.0, 
+            "302024": 1.0, 
+            "4161326": 1.0, 
+            "302224": 1.0, 
+            "4504369": 1.0, 
+            "4153044": 1.0, 
+            "4654582": 4.0, 
+            "302424": 2.0, 
+            "4160857": 1.0, 
+            "4504381": 2.0, 
+            "4542590": 1.0
+        }
+    }, 
+    "racing_car": {
+        "1": {
+            "4540384": 2, 
+            "379521": 1, 
+            "428226": 1, 
+            "4211043": 1, 
+            "4654582": 2, 
+            "302024": 2, 
+            "306924": 2, 
+            "370124": 2, 
+            "303426": 1, 
+            "4211445": 2, 
+            "4211094": 1, 
+            "303226": 1, 
+            "302301": 2, 
+            "4211525": 2
+        }, 
+        "3": {
+            "302321": 2, 
+            "4522035": 2, 
+            "4153044": 1, 
+            "242021": 2, 
+            "4210660": 1, 
+            "302024": 1, 
+            "302124": 2, 
+            "306924": 2, 
+            "366621": 1, 
+            "4542590": 1
+        }, 
+        "2": {
+            "30224": 1, 
+            "4244363": 2, 
+            "4210660": 1, 
+            "306824": 2, 
+            "4162443": 2, 
+            "302224": 1, 
+            "302321": 1, 
+            "302024": 1, 
+            "4654582": 2, 
+            "301021": 1, 
+            "486526": 2
+        }, 
+        "5": {
+            "4211573": 2, 
+            "4211622": 2, 
+            "4550937": 2, 
+            "370726": 2, 
+            "4490127": 2
+        }, 
+        "4": {
+            "303426": 1, 
+            "4211525": 1, 
+            "4190219": 2, 
+            "4520782": 2, 
+            "4518992": 1, 
+            "4189400": 1, 
+            "302424": 2, 
+            "4160857": 1, 
+            "243101": 1, 
+            "4540384": 2, 
+            "4249506": 1, 
+            "4211043": 1, 
+            "366501": 2, 
+            "302321": 1, 
+            "302124": 1, 
+            "4121965": 2, 
+            "4161326": 1, 
+            "4504369": 1, 
+            "4522035": 1, 
+            "428724": 1, 
+            "4504381": 1, 
+            "4632575": 1
+        }
+    }
+}
+const material_list = {
+    "30224": "m", 
+    "366621": "m", 
+    "4522035": "m", 
+    "302124": "m", 
+    "4654582": "m", 
+    "4504369": "m", 
+    "4211445": "m", 
+    "4540384": "m", 
+    "4244363": "m", 
+    "303226": "m", 
+    "379521": "m", 
+    "4211043": "m", 
+    "370726": "m", 
+    "4190219": "m", 
+    "4518992": "m", 
+    "428226": "m", 
+    "302024": "m", 
+    "4490127": "m", 
+    "4153044": "m", 
+    "242021": "m", 
+    "486526": "m", 
+    "306924": "m", 
+    "370124": "m", 
+    "428724": "m", 
+    "4244362": "m", 
+    "366501": "m", 
+    "4211622": "m", 
+    "4189400": "m", 
+    "4211094": "m", 
+    "4632575": "m", 
+    "4210660": "m", 
+    "4504381": "m", 
+    "303426": "m", 
+    "4161326": "m", 
+    "302424": "m", 
+    "4211573": "m", 
+    "301021": "m", 
+    "4160857": "m", 
+    "4520782": "m", 
+    "4162443": "m", 
+    "302224": "m", 
+    "302301": "m", 
+    "4550937": "m", 
+    "4542590": "m", 
+    "4211525": "m", 
+    "302321": "m", 
+    "243101": "m", 
+    "4121965": "m", 
+    "4249506": "m", 
+    "306824": "m"
+}
 // import * as p5 from 'p5'
 import * as $ from 'jquery'
 
@@ -33,8 +291,10 @@ import { Material } from './support/material'
 import { Box } from './model/box'
 import { Procedure} from './model/procedure'
 
+
 const canvas = document.getElementById('simulation')
 const ctx = canvas.getContext('2d')
+
 
 ctx.scale(1, 1)
 ctx.fillStyle = '#202020'
@@ -69,64 +329,54 @@ loadAudio('assets/alarm.wav')
 .then(audio => sounds.set('alarm', audio))
 .catch(e => console.error(e.stack))
 
-// const s = document.getElementById('alarm-audio')
-// s.play()
 
 $('#alarm-audio').trigger('load', e => {
 	console.log('audio loaded')
 })
 
+
 class Simulation {
 	constructor(options) {
 		this.options = options
 		this.started = false
-
 		
-
-		// Material
-		let M1 = new Material({id: 1, type_name: 'legoA', full_amount: 45})
-		let M2 = new Material({id: 2, type_name: 'legoB', full_amount: 60})
-		let M3 = new Material({id: 3, type_name: 'legoC', full_amount: 50})
-		let M4 = new Material({id: 4, type_name: 'legoD', full_amount: 43})
-		let M5 = new Material({id: 5, type_name: 'legoE', full_amount: 53})
-		let M6 = new Material({id: 6, type_name: 'legoF', full_amount: 45})
-		let M7 = new Material({id: 7, type_name: 'legoG', full_amount: 56})
-		let M8 = new Material({id: 8, type_name: 'legoH', full_amount: 60})
-		let M9 = new Material({id: 9, type_name: 'legoI', full_amount: 40})
-
-		let Ms = [M1,M2,M3,M4,M5,M6,M7,M8,M9]
-
-			
-		let test = [
-			[1,2,3,4,5,6,7,8],
-			[2,3,5,2,6,7],
-			[1,4,5,6],
-			[3,7,8],
-			[9,1,3,2]
-		]
-
-
-		
-		let n = 1
-		let As = new Array(test.length)
-		for (let i = 0; i < As.length; i++) {
-			As[i] = []
+		let Ms = []
+		for(const material in material_list){
+			var capacity;
+			if (material_list[material] === 's')
+				capacity = 100;
+			if (material_list[material] === 'm')
+				capacity = 50;
+			if (material_list[material] === 'l')
+				capacity = 20;
+			Ms.push(new Material({id: Number(material), type_name: material, full_amount: capacity}))
 		}
-		for (let i = 0; i < test.length; i++) {
-			for (let j = 0; j < test[i].length; j++) {
-				const name = "B" + n.toString()
+	
+		
 
-				As[i][j] = new Box({
-					id: n, 
-					name: name, 
-					capacity: Ms[test[i][j]-1].full_amount,
-					material: Ms[test[i][j]-1],
-					replenishment_delay: 3
+		
+		var arrangement = {}
+		for(const demands in material_demands['quad']){
+			var station_demands = []
+			for(const m_type in material_demands['quad'][demands]){
+				var material_temp;
+				Ms.forEach(m => {
+					if(m.type_name === m_type)
+					material_temp = m
 				})
-				n++
+				station_demands.push(new Box({
+					id: 1, 
+					name: name, 
+					capacity: material_temp.full_amount,
+					material: material_temp,
+					replenishment_delay: 3
+				}))
 			}
-			
+			arrangement[demands] = station_demands
+			// arrangement.push(station_demands)
 		}
+		
+
 		
 
 		
@@ -135,40 +385,40 @@ class Simulation {
 			id: 1, 
 			product: "Car1",
 			step: 1,
-			consume_material: {1: 5, 2: 3, 3: 4},
-			working_time: 123,
+			consume_material: material_demands['quad']['1'],
+			working_time: 3,
 			deviation: 0.1
 		})
 		let p2 = new Procedure({
 			id: 2, 
 			product: "Car1",
 			step: 2,
-			consume_material: {2: 2, 3: 3, 5: 2},
-			working_time: 344,
+			consume_material: material_demands['quad']['2'],
+			working_time: 3,
 			deviation: 0.1
 		})
 		let p3 = new Procedure({
 			id: 3, 
 			product: "Car1",
 			step: 3,
-			consume_material: {1: 3, 4: 3, 5: 2, 6: 2},
-			working_time: 345,
+			consume_material: material_demands['quad']['3'],
+			working_time: 3,
 			deviation: 0.1
 		})
 		let p4 = new Procedure({
 			id: 4, 
 			product: "Car1",
 			step: 4,
-			consume_material: {3: 3, 7: 1, 8: 1},
-			working_time: 125,
+			consume_material: material_demands['quad']['4'],
+			working_time: 3,
 			deviation: 0.1
 		})
 		let p5 = new Procedure({
 			id: 5, 
 			product: "Car1",
 			step: 5,
-			consume_material: {9: 1, 1: 1, 3: 1, 2: 2},
-			working_time: 256,
+			consume_material: material_demands['quad']['5'],
+			working_time: 3,
 			deviation: 0.1
 		})
 		
@@ -194,16 +444,11 @@ class Simulation {
 				inputPeriod: 1
 		})
 		// Rack
-		console.log('rack 1')
-		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[0],x: 300, y: canvas.height/2-100})
-		console.log('rack 2')
-		this.R2 = new Rack({name: 'R2',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[1],x: 500, y: canvas.height/2-100})
-		console.log('rack 3')
-		this.R3 = new Rack({name: 'R3',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[2],x: 700, y: canvas.height/2-100})
-		console.log('rack 4')
-		this.R4 = new Rack({name: 'R4',rack_row: 7, rack_col: 7, rTime: 0, material_demands: As[3],x: 900, y: canvas.height/2-100})
-		console.log('rack 5')
-		this.R5 = new Rack({name: 'R5',rack_row: 4, rack_col: 4, rTime: 0, material_demands: As[4],x: 1100, y: canvas.height/2-100})
+		this.R1 = new Rack({name: 'R1',rack_row: 4, rack_col: 4, rTime: 12, material_demands: arrangement['1'],x: 300, y: canvas.height/2-100})
+		this.R2 = new Rack({name: 'R2',rack_row: 4, rack_col: 4, rTime: 12, material_demands: arrangement['2'],x: 500, y: canvas.height/2-100})
+		this.R3 = new Rack({name: 'R3',rack_row: 4, rack_col: 4, rTime: 12, material_demands: arrangement['3'],x: 700, y: canvas.height/2-100})
+		this.R4 = new Rack({name: 'R4',rack_row: 5, rack_col: 5, rTime: 12, material_demands: arrangement['4'],x: 900, y: canvas.height/2-100})
+		this.R5 = new Rack({name: 'R5',rack_row: 4, rack_col: 4, rTime: 12, material_demands: arrangement['5'],x: 1100, y: canvas.height/2-100})
 
 
 
@@ -213,7 +458,6 @@ class Simulation {
 			rack: this.R1,
 			inBuf: L1,
 			outBuf: L2,
-			tpTime: 0.0000003,
 			pFail: 0.005,
 			tRepair: 20,
 			x: 300,
@@ -225,7 +469,6 @@ class Simulation {
 			rack: this.R2,
 			inBuf: L2,
 			outBuf: L3,
-			tpTime: 0.0000003,
 			pFail: 0,
 			tRepair: 20,
 			x: 500,
@@ -237,7 +480,6 @@ class Simulation {
 			rack: this.R3,
 			inBuf: L3,
 			outBuf: L4,
-			tpTime: 0.0000003,
 			pFail: 0,
 			tRepair: 20,
 			x: 700,
@@ -249,7 +491,6 @@ class Simulation {
 			rack: this.R4,
 			inBuf: L4,
 			outBuf: L5,
-			tpTime: 0.0000003,
 			pFail: 0,
 			tRepair: 20,
 			x: 900,
@@ -261,7 +502,6 @@ class Simulation {
 			rack: this.R5,
 			inBuf: L5,
 			outBuf: out_buf,
-			tpTime: 0.0000003,
 			pFail: 0,
 			tRepair: 20,
 			x: 1100,
@@ -296,6 +536,7 @@ class Simulation {
 	_getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}
+	
 
 	start() {
 		this.started = true

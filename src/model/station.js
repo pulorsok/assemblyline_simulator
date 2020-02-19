@@ -32,7 +32,7 @@ export class Station {
 		this.rack = options.rack
 		this.inBuf = options.inBuf
 		this.outBuf = options.outBuf
-		this.tpTime = options.tpTime
+		this.tpTime = options.procedure.working_time
 		this.pFail = options.pFail
 		this.tRepair = options.tRepair
 		this.x = options.x
@@ -49,7 +49,7 @@ export class Station {
 		this.updated = false		
 		this.t = 0
 	
-		console.log(this.procedure)
+		
 		if (this.inBuf) {
 			this.inBuf.outStn.push(this)
 		}
