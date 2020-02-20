@@ -8,6 +8,10 @@ import { Box } from "./box"
 const MAX_BUFFER_CAPACITY = 100
 const TWO_PI = 2 * Math.PI
 
+var capacity_of_material = {
+	
+}
+
 export const RackState = {
 	WAITING: 0,
 	BUSY: 1,
@@ -29,6 +33,13 @@ export class Rack {
 		this.rTime = options.rTime
 		this.MAX_BOX = 0
 		this.material_demands = options.material_demands
+
+		//init capacity
+		this.material_demands.forEach(box => {
+			capacity_of_material[box.material.type_name] = box.material.full_amount
+		});
+		console.log(this.name, " : ", capacity_of_material )
+
 		this.box_arrangement = new Array(this.rack_row)
 
 		// init arrangement rack size
@@ -89,6 +100,7 @@ export class Rack {
 
 	get_inventory(){
 		let inventory = {}
+
 		for (let i = 0; i < this.box_arrangement.length; i++) {
 			for (let j = 0; j < this.box_arrangement[i].length; j++) {
 				if(this.box_arrangement[i][j] !== undefined && this.box_arrangement[i][j] !== null){
@@ -98,12 +110,18 @@ export class Rack {
 					}else{
 						let stock = this.box_arrangement[i][j].stock
 						inventory[material] = stock
-					}
-					
+					}	
 				}
-					
 			}
 		}
+		// for (const key in inventory) {
+		// 	if (inventory.hasOwnProperty(key)) {
+		// 		const element = inventory[key];
+		// 		this.material
+				
+		// 	}
+		// }
+		// console.log("inventory = ", inventory)
 		return inventory
 	}
 	calculate_inventory(){
@@ -180,6 +198,18 @@ export class Rack {
 			}
 		}
 	}
+	congestion_process(sufficient_m){
+		// find material in candidate
+		if (!this.candidate_box.find(element => element.material === sufficient_m.material)){
+			// not found
+			return false
+		}
+		// found
+		// 1. remove an current box
+		// 2. put demand material box
+		// 3. which one should be removed ?
+		return true
+	}
 	is_sufficient(menu){
 		for(let m in menu){
 			
@@ -193,15 +223,16 @@ export class Rack {
 
 				//////////////
 				if(b.stock < b.capacity/2){
-					if (!this.candidate_box.find(el => el.material === b.material)) {		
-						this.candidate_box.push(new Box({
+					if (!this.candidate_box.find(el => el.material === b.material)) {	
+						let box = new Box({
 							id: 1, 
 							name: '', 
-							capacity: b.material.full_amount,
+							capacity: capacity_of_material[b.material.type_name],
 							material: b.material,
 							replenishment_delay: 3
-						}))
-						this.add_box(b)
+						})
+						
+						this.add_box(box)
 					}
 				}
 
@@ -218,7 +249,7 @@ export class Rack {
 					// 	return e.material.id == m				
 					// })	
 					if(!cB){
-						// console.log("empty material")
+						console.log(this.name, "empty material: ", b.material.type_name)
 						// put empty box to replensighmen queue
 						this.rqBoxs.push(b)
 						this.replen = true
@@ -321,7 +352,11 @@ export class Rack {
 						if(this.add_box(this.rBox)){
 							this.rBox = null
 							this.state = RackState.WAITING
+							break
 						}
+						this.candidate_box.push(this.rBox)
+						this.rBox = null
+						this.state = RackState.WAITING
 						// 	this.rBox = null
 						// 	this.state = RackState.WAITING
 						// let row = this.rBox.position["row"]

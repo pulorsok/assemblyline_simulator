@@ -333,19 +333,42 @@ loadAudio('assets/alarm.wav')
 $('#alarm-audio').trigger('load', e => {
 	console.log('audio loaded')
 })
+class evolve{
+	constructor(options){
+		this.sigma = Math.random();
+		this.leaning_ration = 0.3
+		this.init_chromosome = options.init_chromosome
+		
 
+	}
+	mutation(){
+		for (const key in this.init_chromosome) {
+			if (this.init_chromosome.hasOwnProperty(key)) {
+				const element = this.init_chromosome[key];
+				
+			}
+		}
+	}
+}
 
 class Simulation {
 	constructor(options) {
 		this.time_step = 0;
 		this.start_time = 0;
-		this.time_period = 3;
+		this.time_period = 300;
 		this.options = options
 		this.started = false
 		this.current_productivity = 0;
 		this.material_inventory = 0;
 		this.material_demands = 0;
 		this.cycle_time = 3;
+		this.average_inventory={
+			"R1":{},
+			"R2":{},
+			"R3":{},
+			"R4":{},
+			"R5":{}
+		}
 		let Ms = []
 		for(const material in material_list){
 			var capacity;
@@ -464,7 +487,7 @@ class Simulation {
 			rack: this.R1,
 			inBuf: L1,
 			outBuf: L2,
-			pFail: 0.005,
+			pFail: 0,
 			tRepair: 20,
 			x: 300,
 			y: canvas.height / 2,
@@ -544,63 +567,74 @@ class Simulation {
 	}
 	
 	inventory_mesurement(){
-		console.log("inventory measurement")
+
+		// get current inventory
 		this.fitness_inventory = {}
 		this.Racks.forEach(rack => {
 			let inventory_list = rack.get_inventory()
+			this.fitness_inventory[rack.name] = {}
 			for (const key in inventory_list) {
 				const element = inventory_list[key];
-				if(this.fitness_inventory[key] !== undefined){
-					this.fitness_inventory[key] = this.fitness_inventory[key] + element
+				
+				if(this.fitness_inventory[rack.name][key] !== undefined){
+					this.fitness_inventory[rack.name][key] = this.fitness_inventory[rack.name][key] + element
 				}else{
-					this.fitness_inventory[key] = element
+					this.fitness_inventory[rack.name][key] = element
 				}
 				
 			}
 		});
+
+		// get demands for each material
 		var inventory_demands = {}
 		for (const station in material_demands['quad']) {
+			let rack_name = "R" + station
+			inventory_demands[rack_name] = {}
 			if (material_demands['quad'].hasOwnProperty(station)) {
 				const demands = material_demands['quad'][station];
 				for (const key in demands) {
 					if (demands.hasOwnProperty(key)) {
 						const element = demands[key];
-						if (inventory_demands[key] !== undefined){
-							inventory_demands[key] = inventory_demands[key] + element
+						
+						if (inventory_demands[rack_name][key] !== undefined){
+							inventory_demands[rack_name][key] = inventory_demands[rack_name][key] + element
 						}else{ 
-							inventory_demands[key] = element
+							inventory_demands[rack_name][key] = element
 						}
 					}
 				}
 				
 			}
 		}
-		// console.log(inventory_demands)
-		for (const key in this.fitness_inventory) {
-			if (this.fitness_inventory.hasOwnProperty(key)) {
-				const element = this.fitness_inventory[key];
-				let cycle = this.time_period/this.cycle_time
-				this.fitness_inventory[key] = element - (inventory_demands[key]*cycle)
+		
+
+		var inventory_diff = {}
+		// current - demand
+		for (const rack in this.fitness_inventory) {
+			inventory_diff[rack] = {}
+			if (this.fitness_inventory.hasOwnProperty(rack)) {
+				for (const key in this.fitness_inventory[rack]) {
+					if (this.fitness_inventory[rack].hasOwnProperty(key)) {
+						const element = this.fitness_inventory[rack][key];
+						
+						inventory_diff[rack][key] = element - inventory_demands[rack][key]
+					}
+				}
 			}
 		}
 
-		// for (const station in material_demands['quad']) {
-		// 	if (material_demands['quad'].hasOwnProperty(station)) {
-		// 		const element = material_demands['quad'][station];
-		// 		for (const key in element) {
-		// 			const demands_percycle = element[key];
-		// 			if (this.fitness_inventory[key] !== undefined){
-		// 				let cycle = this.time_period/this.cycle_time
-		// 				// this.fitness_inventory[key] = this.fitness_inventory[key] - (demands_percycle*cycle)
-		// 				this.fitness_inventory[key] = demands_percycle*cycle
-						
-		// 			}
-		// 		}
-			
+	
+		// let average_inventory = {}
+		// for (const key in this.fitness_inventory) {
+		// 	if (this.fitness_inventory.hasOwnProperty(key)) {
+		// 		const element = this.fitness_inventory[key];
+		// 		average_inventory[key] = Math.floor(element/this.time_period)
 				
 		// 	}
 		// }
-		console.log(this.fitness_inventory)
+		// console.log(inventory_diff)
+		return inventory_diff
+		
 		
 	}
 	start() {
@@ -673,12 +707,57 @@ class Simulation {
 		ctx.textAlign = 'left'
 		ctx.textBaseline = 'bottom'
 		let y = ctx.canvas.height - 800
-		let x = ctx.canvas.width -100
+		
+
+
 		this.time_step++;
+		
+		var inventory_diff = this.inventory_mesurement()
+		// console.log(inventory_diff)
+		
+		for (const rack in inventory_diff) {
+			
+			if (inventory_diff.hasOwnProperty(rack)) {
+				for (const key in inventory_diff[rack]) {
+					if (inventory_diff[rack].hasOwnProperty(key)) {
+						const element = inventory_diff[rack][key];
+						if (this.average_inventory[rack][key] !== undefined){
+							this.average_inventory[rack][key] = this.average_inventory[rack][key] + element
+						}else{
+							this.average_inventory[rack][key] = element
+						}
+					}
+				}
+				
+				
+			}
+		}
+		
+		// console.log(inventory_diff)
+		// console.log(this.average_inventory)
 		if(this.time_step-this.start_time >= this.time_period){
+			console.log("p")
 			this.current_productivity = this.testLine.productivity 	
 			this.start_time = this.time_step
-			this.inventory_mesurement()
+			for (const rack in this.average_inventory) {
+				if (this.average_inventory.hasOwnProperty(rack)) {
+					for (const key in this.average_inventory[rack]) {
+						if (this.average_inventory[rack].hasOwnProperty(key)) {
+							const origin = this.average_inventory[rack][key];
+							const average = this.average_inventory[rack][key]/this.time_period;
+							this.average_inventory[rack][key] = average
+						}
+					}
+				}
+			}
+			// console.log(this.average_inventory)
+			this.average_inventory={
+				"R1":{},
+				"R2":{},
+				"R3":{},
+				"R4":{},
+				"R5":{}
+			}
 		}
 		
 		ctx.fillText(`Productivity: ${this.current_productivity | 0} units/min`, 310, 24)
