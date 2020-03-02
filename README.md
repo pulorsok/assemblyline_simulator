@@ -1,54 +1,19 @@
-# production-line-simulation
-A production line simulation with JavaScript and p5.js
+# Abstrack
+ABSTRACT
 
-Simulation of a production line with multiple, possibly paralell, stations and various buffer capacities. Imlementation of a non-deterministic multi-stage producer-consumer pattern.
+Purpose of the paper:
+Since long, KANBAN is used in industry as an effective and efficient approach of supplying material as needed to the shop floor. In its traditional form, the parameters for KANBAN, that is for each material the number of boxes and the quantity per box, are static, i.e. calculated initially and, if at all, re-calculated only if someone suspects the parameters to be sub-optimal. This paper shows how a traditional KANBAN system can be converted into a self-adaptive KANBAN, where the parameters are dynamically adjusted to reflect the dynamics of the environment, such as availability and utilization of transport capacity for the boxes as well as picking capacity in the warehouse. The self-adaptive approach aims at setting KANBAN parameters in a way that shop-floor inventory is at a viable minimum.
 
-<img src="dist/assets/docs/production_simulation_example4.png" />
+Design/methodology/approach: 
+Using a simulation of the process of supplying material, we suggest an optimization method based on Evolution Strategies (ES) to dynamically adjust (self-adapt) KANBAN parameters. The ES method is applied to a simulation system to search for and analyze optimal KANBAN parameters.  
 
-Description:
-Discrete-time simulation of a factory-like production line based on JavaScript. 
-It supports multiple stations which can be linked serially, in paralell or in 
-any combination thereof.
-
-Other features:
--The production line is implemented as a multi-level bi-directional linked list 
- where each station is aware of the station that follows but also on the previous 
- stations
--The input to a station is drawn either directly from a previous station or from 
- a FIFO-buffer
--Configurable station throughput times, buffer sizes, failure probabilities
--Supports shared buffers between stations
--Simulated station failures which affect the overall production rate
--The visual output of the full production line is based on forward recursion
--Time-based update of the production line based on a recursive backward propagation 
- algorithm
--Generates a realtime performance metric in terms of the overall productivity
-	
-Remarks:
-	-Running the instance mode of p5.js
-	
-Resources:
-"repair symbol"
-
-https://s-media-cache-ak0.pinimg.com/originals/b7/f5/7e/b7f57ed2cb73041d0e87b32456c82a5c.png
+Findings: 
+Compared to the traditional KANBAN approach, self-adaptive KANBAN is more flexible and efficient in unstable production environments, in which key variables are volatile, e.g. demand because of changes in the model mix or replenishment lead time due to the variability of capacity in picking and in-house transportation. In these cases, self-adaptive (without human intervention) KANBAN is able to adjust material supply parameters for stabilizing the production output by avoiding material shortages while, at the same time, reducing on-hand inventory. 
 
 
-https://www.google.se/search?hl=sv&site=imghp&tbm=isch&source=hp&biw=1536&bih=759&q=repair+symbol&oq=repair+symbol&gs_l=img.3..0i19k1l2j0i5i30i19k1.840.3008.0.3686.14.14.0.0.0.0.95.845.13.13.0....0...1.1.64.img..1.13.840.0..0j0i30k1j0i8i30i19k1.P1hojc9YQDU#imgrc=6aIINE-4O9SU-M:	
-Sounds
-http://soundbible.com/287-Industrial-Alarm.html
-	
-Version : 0.1
-Date    : 03/2017
-Author  : Jari Repo, jarirepo76@gmail.com
+Value/Originality: 
+The extant literature focuses on the number of KANBAN boxes deployed for a certain material. This number is static in the conventional KANBAN approach and variable in adaptive KANBAN. However, the second KANBAN parameter, the quantity of material per box, is seen as a constant in extant research. Our study presents an approach that uses both parameters as variables. This allows for a better adaptation to volatile production environments, because changing the quantity per box within the limits of its carrying capacity (1) does not put additional load on picking and in-house transportation and (2) allows for reducing inventory to a viable minimum while still working with the same general set-up, e.g. a two-box KANBAN.
 
-Change log
-	- added coordinates to Station and Buffer for on-screen drawing
-	- correct drawing of the stations, buffers and connection line
-	
-Possible improvements:
-  - avoid drawing stations and buffer more than once
-	- indicate flows (connections) by arrows instead of center-based lines
-	- separate the model from the visual elements
+Research limitations/implications:
+Data for this study has been collected from a simulation study, resembling SimCar, a lab-based manufacturing environment. More case-study research is required to test the approach in large-scale industrial applications. Furthermore, in essence, the self-adaptive approach is still reactive. For a proactive approach, it would be necessary to establish deep-learning algorithms on extensive data sets (including, but not limited to, availability and utilization of transportation and picking capacity) collected from the manufacturing environment.
 
-
-# Resources
